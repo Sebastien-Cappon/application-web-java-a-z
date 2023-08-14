@@ -1,17 +1,42 @@
 package com.paymybuddy.ewallet.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
+import org.hibernate.annotations.DynamicUpdate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@DynamicUpdate
+@Table(name = "transaction")
 public class Transaction {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "transaction_id")
 	private int id;
-	private Date date;
-	private int sender;
-	private int receiver;
-	private float amount;
-	private float fee;
+	@Column(name = "transaction_date")
+	private LocalDate date;
+	@ManyToOne()
+	@JoinColumn(name = "transaction_sender")
+	private User sender;
+	@ManyToOne()
+	@JoinColumn(name = "transaction_receiver")
+	private User receiver;
+	@Column(name = "transaction_amount")
+	private double amount;
+	@Column(name = "transaction_fee")
+	private double fee;
+	@Column(name = "transaction_description")
 	private String description;
-
+	
 	public int getId() {
 		return id;
 	}
@@ -20,43 +45,43 @@ public class Transaction {
 		this.id = id;
 	}
 
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 
-	public int getSender() {
+	public User getSender() {
 		return sender;
 	}
 
-	public void setSender(int sender) {
+	public void setSender(User sender) {
 		this.sender = sender;
 	}
 
-	public int getReceiver() {
+	public User getReceiver() {
 		return receiver;
 	}
 
-	public void setReceiver(int receiver) {
+	public void setReceiver(User receiver) {
 		this.receiver = receiver;
 	}
 
-	public float getAmount() {
+	public double getAmount() {
 		return amount;
 	}
 
-	public void setAmount(float amount) {
+	public void setAmount(double amount) {
 		this.amount = amount;
 	}
 
-	public float getFee() {
+	public double getFee() {
 		return fee;
 	}
 
-	public void setFee(float fee) {
+	public void setFee(double fee) {
 		this.fee = fee;
 	}
 

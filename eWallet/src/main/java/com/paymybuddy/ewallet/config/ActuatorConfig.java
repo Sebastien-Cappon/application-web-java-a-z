@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @version 1.0
  */
 @Configuration
-public class ActuatorConfiguration {
+public class ActuatorConfig {
 
 	/**
 	 * The Bean required to run <code>httpExchanges</code>. Don't worry, this bean

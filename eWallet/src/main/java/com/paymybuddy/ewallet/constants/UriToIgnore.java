@@ -1,4 +1,4 @@
-package com.paymybuddy.ewallet.constant;
+package com.paymybuddy.ewallet.constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
