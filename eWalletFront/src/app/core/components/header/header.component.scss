@@ -1,0 +1,31 @@
+mat-toolbar {
+    padding-left: 210px;
+    justify-content: right;
+
+    background-image: url('/assets/images/payMyBuddyLogo.png');
+    background-repeat: no-repeat;
+    background-position: left;
+    background-size: contain;
+    background-color: white;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, .5);
+}
+
+ul {
+    padding: 0 .5em 0 0;
+    list-style: none;
+
+    li {
+        display: inline-block;
+        margin-left: 2em;
+    }
+
+    a {
+        color: #73d369;
+        text-decoration: none;
+        font-weight: normal;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

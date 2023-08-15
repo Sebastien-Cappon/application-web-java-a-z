@@ -1,0 +1,17 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+
+    font-family: "Roboto Condensed", "Helvetica Neue", sans-serif;
+    font-size: 1.1em;
+
+    background-image: url('./assets/images/payMyBuddyBackground.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    background-color: #f4f7fd;
+}
