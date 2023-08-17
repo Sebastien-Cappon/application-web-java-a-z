@@ -3,7 +3,7 @@
 
 $my-primary: mat-palette($mat-green, A400);
 $my-accent: mat-palette($mat-light-blue, 500);
-$my-warn: mat-palette($mat-orange, 700);
+$my-warn: mat-palette($mat-red);
 
 $my-theme: mat-light-theme($my-primary, $my-accent, $my-warn);
 

@@ -6,7 +6,6 @@ body {
     margin: 0;
 
     font-family: "Roboto Condensed", "Helvetica Neue", sans-serif;
-    font-size: 1.1em;
 
     background-image: url('./assets/images/payMyBuddyBackground.jpg');
     background-repeat: no-repeat;
@@ -14,4 +13,52 @@ body {
     background-position: center;
     background-size: cover;
     background-color: #f4f7fd;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+mat-card-header {
+    margin: 3px !important;
+    padding: 0 !important;
+    
+    border-radius: 2px 2px 0 0;
+    background-color: #03a9f4;
+    
+    mat-card-title {
+        padding: 12px !important;
+        
+        font-size: 18px !important;
+        color: #fff;
+    }    
+}
+
+mat-card-content {
+    padding: 16px 16px 0 16px !important
+}
+
+mat-error {
+    margin-top: -4px;
+    margin-right: -16px;
+
+    font-size: 12px;
+    text-align: right;
+}
+
+mat-card-actions {
+    padding: 16px !important;
+
+    button {
+        width: 25%;
+        margin: 0 auto;
+        font-size: 14px;
+
+        mat-spinner {
+            width: 20px !important;
+        }
+    }
 }

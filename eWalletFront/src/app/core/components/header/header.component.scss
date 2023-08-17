@@ -1,4 +1,7 @@
 mat-toolbar {
+    position: absolute;
+    z-index: 99;
+    
     padding-left: 210px;
     justify-content: right;
 
@@ -11,7 +14,9 @@ mat-toolbar {
 }
 
 ul {
-    padding: 0 .5em 0 0;
+    padding: 0 8px 0 0;
+
+    font-size: 18px;
     list-style: none;
 
     li {
