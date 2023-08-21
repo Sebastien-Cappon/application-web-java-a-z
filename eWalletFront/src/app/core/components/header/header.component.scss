@@ -33,4 +33,15 @@ ul {
             text-decoration: underline;
         }
     }
+
+    #logLink {
+        display: inline-block;
+        width: 20px;
+        height: 17px;
+        margin-bottom: -2px;
+
+        background-image: url('/assets/images/powerOffSolid.png');
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
 }

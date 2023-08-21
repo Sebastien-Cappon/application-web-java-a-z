@@ -22,6 +22,7 @@ import com.paymybuddy.ewallet.service.ITransactionService;
 @RestController
 @CrossOrigin(origins="http://localhost:4200")
 public class TransactionController {
+	
 	@Autowired
 	private ITransactionService iTransactionService;
 	

@@ -26,7 +26,7 @@ import com.paymybuddy.ewallet.service.BuddyService;
 import com.paymybuddy.ewallet.utils.InstanceBuilder;
 
 @WebMvcTest(controllers = BuddyController.class)
-public class BuddyControllerTests {
+public class BuddyControllerTest {
 	
 	private User userResponse = InstanceBuilder.createUser(1, "John", "Smith", "john.smith@mrandmrs.smth", false, "NotAnHashedAndSaltedPwd", 30.0, true);
 	private BuddyKey buddyKeyResponse = InstanceBuilder.createBuddyKey(userResponse, userResponse);

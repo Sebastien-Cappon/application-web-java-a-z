@@ -22,8 +22,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paymybuddy.ewallet.dto.UserLoginDto;
+import com.paymybuddy.ewallet.dto.UserLoginResponseDto;
 import com.paymybuddy.ewallet.model.User;
 import com.paymybuddy.ewallet.service.UserService;
+import com.paymybuddy.ewallet.utils.DtoInstanceBuilder;
 import com.paymybuddy.ewallet.utils.InstanceBuilder;
 
 @WebMvcTest(controllers = UserController.class)
@@ -142,11 +145,13 @@ public class UserControllerTest {
 	}
 	
 	@Test
-	public void getUserByEmailAndPassword_shouldReturnOk() throws Exception {
-		when(userService.getUserByEmailAndPassword(any(User.class)))
-			.thenReturn(userResponse);
+	public void postUserByEmailAndPassword_shouldReturnOk() throws Exception {
+		UserLoginResponseDto userLoginResponse = DtoInstanceBuilder.createUserLoginResponseDto(1, "John", "Smith", "john.smith@mrandmrs.smth");
 		
-		mockMvc.perform(get("/login")
+		when(userService.postUserByEmailAndPassword(any(UserLoginDto.class)))
+			.thenReturn(userLoginResponse);
+		
+		mockMvc.perform(post("/login")
 				.content(objectMapper.writeValueAsString(userResponse))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -154,11 +159,7 @@ public class UserControllerTest {
 			.andExpect(jsonPath("$.id").value(1))
 			.andExpect(jsonPath("$.firstname").value("John"))
 			.andExpect(jsonPath("$.lastname").value("Smith"))
-			.andExpect(jsonPath("$.email").value("john.smith@mrandmrs.smth"))
-			.andExpect(jsonPath("$.social").value(false))
-			.andExpect(jsonPath("$.password").value("NotAnHashedAndSaltedPwd"))
-			.andExpect(jsonPath("$.amount").value(30.0))
-			.andExpect(jsonPath("$.active").value(true));
+			.andExpect(jsonPath("$.email").value("john.smith@mrandmrs.smth"));
 	}
 	
 	@Test

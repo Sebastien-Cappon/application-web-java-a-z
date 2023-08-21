@@ -7,6 +7,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './auth/auth.module';
+import { HomeModule } from './home/home.module';
+import { TransferModule } from './transfer/transfer.module';
+import { ProfileModule } from './profile/profile.module';
+import { ContactsModule } from './contacts/contacts.module';
 
 @NgModule({
   declarations: [
@@ -18,10 +22,11 @@ import { AuthModule } from './auth/auth.module';
     BrowserAnimationsModule,
     CoreModule,
     SharedModule,
-    AuthModule
-  ],
-  providers: [
-
+    AuthModule,
+    HomeModule,
+    TransferModule,
+    ProfileModule,
+    ContactsModule
   ],
   bootstrap: [
     AppComponent

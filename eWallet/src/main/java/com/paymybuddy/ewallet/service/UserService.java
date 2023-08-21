@@ -7,12 +7,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.paymybuddy.ewallet.dto.UserLoginDto;
+import com.paymybuddy.ewallet.dto.UserLoginResponseDto;
 import com.paymybuddy.ewallet.model.User;
 import com.paymybuddy.ewallet.repository.UserRepository;
 import com.paymybuddy.ewallet.utils.PasswordManager;
 
 @Service
 public class UserService implements IUserService {
+	
 	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
 	@Autowired
@@ -56,14 +59,24 @@ public class UserService implements IUserService {
 		return null;
 	}
 
-	public User getUserByEmailAndPassword(User userInput) throws Exception {
-		if (userRepository.findByEmail(userInput.getEmail()).isPresent()) {
-			User user = userRepository.findByEmail(userInput.getEmail()).get();
-			String inputPassword = userInput.getPassword();
-			String userPassword = user.getPassword();
-
-			if (passwordManager.checkPassword(inputPassword, userPassword)) {
-				return user;
+	public UserLoginResponseDto postUserByEmailAndPassword(UserLoginDto userLoginDto) throws Exception {
+		if (userRepository.findByEmail(userLoginDto.getEmail()).isPresent()) {
+			User user = userRepository.findByEmail(userLoginDto.getEmail()).get();
+			
+			if(user.isActive() && !user.isSocial()) {
+				String inputPassword = userLoginDto.getPassword();
+				String userPassword = user.getPassword();
+	
+				if (passwordManager.checkPassword(inputPassword, userPassword)) {
+					UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto();
+					
+					userLoginResponseDto.setId(user.getId());
+					userLoginResponseDto.setFirstname(user.getFirstname());
+					userLoginResponseDto.setLastname(user.getLastname());
+					userLoginResponseDto.setEmail(user.getEmail());
+					
+					return userLoginResponseDto;
+				}
 			}
 		}
 

@@ -1,4 +1,5 @@
 <div class="container">
-    <p>user-list works!</p>    
+    <h2>Utilisateurs</h2>
+    <app-user-list-item *ngFor="let user of users$ | async" [user]="user"></app-user-list-item>
 </div>
 

@@ -14,6 +14,7 @@ import com.paymybuddy.ewallet.repository.TransactionRepository;
 
 @Service
 public class TransactionService implements ITransactionService {
+	
 	private static final Logger logger = LoggerFactory.getLogger(TransactionService.class);
 
 	@Autowired
