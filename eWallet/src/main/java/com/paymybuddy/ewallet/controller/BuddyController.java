@@ -4,14 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.paymybuddy.ewallet.model.Buddy;
 import com.paymybuddy.ewallet.model.User;
@@ -37,9 +38,14 @@ public class BuddyController {
 	
 	@PostMapping("/buddy")
 	@ResponseBody
-	@ResponseStatus(HttpStatus.CREATED)
-	public Buddy addBuddy(@RequestBody Buddy buddy) {
-		return iBuddyService.addBuddy(buddy);
+	public ResponseEntity<Buddy> addBuddy(@RequestBody Buddy buddy) {
+		Buddy createdBuddy = iBuddyService.addBuddy(buddy);
+		
+		if(createdBuddy == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<Buddy>(createdBuddy, HttpStatus.CREATED);
+		}
 	}
 	
 	@DeleteMapping("/buddy")

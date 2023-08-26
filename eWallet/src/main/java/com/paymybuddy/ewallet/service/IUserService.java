@@ -3,7 +3,7 @@ package com.paymybuddy.ewallet.service;
 import java.util.List;
 
 import com.paymybuddy.ewallet.dto.UserLoginDto;
-import com.paymybuddy.ewallet.dto.UserLoginResponseDto;
+import com.paymybuddy.ewallet.dto.UserProfileDto;
 import com.paymybuddy.ewallet.model.User;
 
 public interface IUserService {
@@ -16,10 +16,12 @@ public interface IUserService {
 	public List<User> getUsers_orderByAmountAsc();
 	public List<User> getUsers_orderByAmountDesc();
 	
-	public User getUserById(int id);
-	public UserLoginResponseDto postUserByEmailAndPassword(UserLoginDto userLoginDto) throws Exception;
+	public User getUserById(int userId);
+	public User postUserByEmailAndPassword(UserLoginDto userLoginDto) throws Exception;
 	
-	public User addUser(User user) throws Exception;	
-	public User updateUser(User update) throws Exception;
-	public void deleteUser(User user);
+	public User addUser(User user) throws Exception;
+	public Integer updateProfile(int userId, UserProfileDto userProfileDto) throws Exception;
+	public Integer updateActive(int userId, boolean isActive) throws Exception;
+	public Integer updateAmount(int userId, double amount) throws Exception;
+	public void deleteUserById(int userId);
 }

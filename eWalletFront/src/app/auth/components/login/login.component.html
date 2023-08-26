@@ -1,43 +1,43 @@
 <div class="container">
     <mat-card *ngIf="!isLogged" [formGroup]="loginForm" id="loginCard">
         <mat-card-header>
-            <mat-card-title background-color="primary">Connexion</mat-card-title>
+            <mat-card-title background-color="primary"><h1>Log in</h1></mat-card-title>
         </mat-card-header>
         <mat-card-content>
             <mat-form-field color="accent">
-                <mat-label>Adresse mail</mat-label>
-                <input matInput type="text" [formControl]="emailCtrl" placeholder="monadresse@email.com">
-                <mat-error>{{ getFormControlErrorText(emailCtrl) }}</mat-error>
+                <mat-label>E-mail address</mat-label>
+                <input matInput type="text" [formControl]="loginEmailCtrl" placeholder="monadresse@email.com">
+                <mat-error>{{ getLoginFormControlErrorText(loginEmailCtrl) }}</mat-error>
             </mat-form-field>
             <mat-form-field color="accent">
-                <mat-label>Mot de passe</mat-label>
-                <input id="coin" matInput type="password" formControlName="password">
-                <mat-error>Ce champ est requis</mat-error>
+                <mat-label>Password</mat-label>
+                <input matInput type="password" formControlName="password">
+                <mat-error>This input field is required.</mat-error>
             </mat-form-field>
             <div id="credentialErrorField" *ngIf="isWrongCredentials">
-                <mat-error>Identifiants incorrects. Veuillez ré-essayer.</mat-error>
+                <mat-error>Incorrects login. Please try again.</mat-error>
             </div>
         </mat-card-content>
         <mat-card-actions *ngIf="loginForm.valid">
             <button mat-stroked-button color="accent" (click)="onLogin()" [disabled]="isLoading" >
-                <span *ngIf="!isLoading">CONNEXION</span>
+                <span *ngIf="!isLoading">Log in</span>
                 <mat-spinner *ngIf="isLoading" color="accent" mode="indeterminate"></mat-spinner>
             </button>
         </mat-card-actions>
     </mat-card>
-
+    
     <mat-card *ngIf="isLogged" [formGroup]="loginForm" id="loginCard">
         <mat-card-header>
-            <mat-card-title background-color="primary">Déconnexion</mat-card-title>
+            <mat-card-title background-color="primary">Log out</mat-card-title>
         </mat-card-header>
-        <mat-card-content>
+        <mat-card-content *ngIf="currentUser$ | async as currentUser">
             <div id="logoutMessage">
-                Vous êtes connecté en tant que <b>{{ currentUser.firstname | uppercase }} {{ currentUser.lastname }}</b>.<br>
-                Souhaitez-vous vraiment vous déconnecter ?
+                You are logged in as <b>{{ currentUser.lastname | titlecase }} {{ currentUser.firstname | titlecase }}</b>.<br>
+                Are you sure you want to log out ?
             </div>
         </mat-card-content>
         <mat-card-actions>
-            <button mat-stroked-button color="accent" (click)="onLogout()" >DECONNECTER</button>
+            <button mat-stroked-button color="accent" (click)="onLogout()" >Log out</button>
         </mat-card-actions>
     </mat-card>
 </div>

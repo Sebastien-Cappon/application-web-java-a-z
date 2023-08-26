@@ -24,7 +24,11 @@ public class BuddyService implements IBuddyService {
 	}
 	
 	public Buddy addBuddy(Buddy buddy) {
-		return buddyRepository.save(buddy);
+		if(buddy != null && buddy.getId().getFirstUser() != null && buddy.getId().getSecondUser() != null) {
+			return buddyRepository.save(buddy);
+		}
+		
+		return null;
 	}
 	
 	public void deleteBuddy(Buddy buddy) {

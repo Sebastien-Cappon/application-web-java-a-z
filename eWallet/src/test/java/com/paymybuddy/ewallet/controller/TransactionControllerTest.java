@@ -18,10 +18,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymybuddy.ewallet.model.Transaction;
@@ -288,6 +290,15 @@ public class TransactionControllerTest {
 	}
 	
 	@Test
+	public void addTransaction_shouldThrowBadRequest() throws Exception {
+		when(transactionService.addTransaction(any(Transaction.class)))
+			.thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+		
+		mockMvc.perform(post("/transaction"))
+			.andExpect(status().isBadRequest());
+	}
+	
+	@Test
 	public void updateTransactionById_shouldReturnOk() throws Exception {
 		when(transactionService.updateTransactionById(any(Transaction.class)))
 			.thenReturn(transactionResponse);
@@ -307,6 +318,16 @@ public class TransactionControllerTest {
 			.andExpect(jsonPath("$.fee").value(0.1))		
 			.andExpect(jsonPath("$.description").value("First transaction"));;
 	}
+	
+	@Test
+	public void updateTransactionById_shouldThrowBadRequest() throws Exception {
+		when(transactionService.updateTransactionById(any(Transaction.class)))
+			.thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+		
+		mockMvc.perform(put("/transaction"))
+			.andExpect(status().isBadRequest());
+	}
+	
 	
 	@Test
 	public void deleteTransaction_shouldReturnOk() throws Exception {

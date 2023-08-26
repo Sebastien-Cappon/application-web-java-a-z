@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.paymybuddy.ewallet.dto.UserLoginDto;
-import com.paymybuddy.ewallet.dto.UserLoginResponseDto;
+import com.paymybuddy.ewallet.dto.UserProfileDto;
 import com.paymybuddy.ewallet.model.User;
 import com.paymybuddy.ewallet.repository.UserRepository;
 import com.paymybuddy.ewallet.utils.PasswordManager;
@@ -51,15 +51,16 @@ public class UserService implements IUserService {
 		return userRepository.findByOrderByAmountDesc();
 	}
 
-	public User getUserById(int id) {
-		if (userRepository.findById(id).isPresent()) {
-			return userRepository.findById(id).get();
+	public User getUserById(int userId) {
+		if (userRepository.findById(userId).isPresent()) {
+			User userResponse = userRepository.findById(userId).get();
+			return userResponse;
 		}
 
 		return null;
 	}
-
-	public UserLoginResponseDto postUserByEmailAndPassword(UserLoginDto userLoginDto) throws Exception {
+	
+	public User postUserByEmailAndPassword(UserLoginDto userLoginDto) throws Exception {
 		if (userRepository.findByEmail(userLoginDto.getEmail()).isPresent()) {
 			User user = userRepository.findByEmail(userLoginDto.getEmail()).get();
 			
@@ -68,14 +69,7 @@ public class UserService implements IUserService {
 				String userPassword = user.getPassword();
 	
 				if (passwordManager.checkPassword(inputPassword, userPassword)) {
-					UserLoginResponseDto userLoginResponseDto = new UserLoginResponseDto();
-					
-					userLoginResponseDto.setId(user.getId());
-					userLoginResponseDto.setFirstname(user.getFirstname());
-					userLoginResponseDto.setLastname(user.getLastname());
-					userLoginResponseDto.setEmail(user.getEmail());
-					
-					return userLoginResponseDto;
+					return user;
 				}
 			}
 		}
@@ -84,60 +78,87 @@ public class UserService implements IUserService {
 	}
 
 	public User addUser(User user) throws Exception {
-		for (User checkUser : this.getUsers()) {
-			if (checkUser.getEmail().contentEquals(user.getEmail())) {
-				logger.warn("A user with this email address already exists.");
-				return null;
+		if(user != null && user.getFirstname() != null && user.getLastname() != null && user.getEmail() != null && (user.isSocial() || user.getPassword() != null)) {
+			for (User checkUser : this.getUsers()) {
+				if (checkUser.getEmail().contentEquals(user.getEmail())) {
+					logger.warn("A user with this email address already exists.");
+					return null;
+				}
 			}
+	
+			if (!user.isSocial()) {
+				String hashedPassword = passwordManager.hashPassword(user.getPassword());
+				user.setPassword(hashedPassword);
+			} else {
+				user.setPassword(null);
+			}
+	
+			return userRepository.save(user);
 		}
-
-		if (!user.isSocial()) {
-			String hashedPassword = passwordManager.hashPassword(user.getPassword());
-			user.setPassword(hashedPassword);
-		} else {
-			user.setPassword(null);
-		}
-
-		return userRepository.save(user);
+		
+		return null;
 	}
-
-	public User updateUser(User update) throws Exception {
-		User userToUpdate = this.getUserById(update.getId());
-
-		if (userToUpdate != null) {
-			update.setId(userToUpdate.getId());
-			if (update.getFirstname() == null) { update.setFirstname(userToUpdate.getFirstname()); }
-			if (update.getLastname() == null) { update.setLastname(userToUpdate.getLastname()); }
-			if (update.isSocial() == false) { update.setSocial(userToUpdate.isSocial()); }
-			if (update.getAmount() == 0) { update.setAmount(userToUpdate.getAmount()); }
-			if (update.isActive() == false) { update.setActive(userToUpdate.isActive()); }
-
-			if (update.getEmail() == null) {
-				update.setEmail(userToUpdate.getEmail());
+	
+	public Integer updateProfile(int userId, UserProfileDto userProfileDto) throws Exception {
+		if(userRepository.findById(userId).isPresent()) {
+			User userToUpdate = userRepository.findById(userId).get();
+			
+			if (userProfileDto.getFirstname() == null || userProfileDto.getFirstname().isBlank()) {
+				userProfileDto.setFirstname(userToUpdate.getFirstname());
+			}
+			if (userProfileDto.getLastname() == null || userProfileDto.getLastname().isBlank()) {
+				userProfileDto.setLastname(userToUpdate.getLastname());
+			}
+			if (userProfileDto.getEmail() == null || userProfileDto.getEmail().isBlank()) {
+				userProfileDto.setEmail(userToUpdate.getEmail());
 			} else {
 				for (User checkUser : this.getUsers()) {
-					if (checkUser.getEmail().contentEquals(update.getEmail())) {
+					if (checkUser.getEmail().contentEquals(userProfileDto.getEmail())) {
 						logger.warn("This email address is already used.");
-						update.setEmail(userToUpdate.getEmail());
+						userProfileDto.setEmail(userToUpdate.getEmail());
 						break;
 					}
 				}
 			}
-
-			if (update.getPassword() == null) {
-				update.setPassword(userToUpdate.getPassword());
+			if (userProfileDto.getPassword() == null || userProfileDto.getPassword().isBlank()) {
+				userProfileDto.setPassword(userToUpdate.getPassword());
 			} else {
-				update.setPassword(passwordManager.hashPassword(update.getPassword()));
+				userProfileDto.setPassword(passwordManager.hashPassword(userProfileDto.getPassword()));
 			}
 
-			return userRepository.save(update);
+			userRepository.updateProfile(userId, userProfileDto.getFirstname(), userProfileDto.getLastname(), userProfileDto.getEmail(), userProfileDto.getPassword());
+			return 1;
+		}
+
+		logger.warn("This user doesn't exist.");
+		return null;
+	}
+	
+	public Integer updateActive(int userId, boolean isActive) throws Exception {
+		if(userRepository.findById(userId).isPresent()) {
+			userRepository.updateActive(userId, isActive);
+			return 1;
+		}
+
+		logger.warn("This user doesn't exist.");
+		return null;
+	}
+	
+	public Integer updateAmount(int userId, double amount) throws Exception {
+		if(userRepository.findById(userId).isPresent()) {
+			userRepository.updateAmount(userId, amount);
+			return 1;
 		}
 
 		logger.warn("This user doesn't exist.");
 		return null;
 	}
 
-	public void deleteUser(User user) {
-		userRepository.delete(user);
+	public void deleteUserById(int userId) {
+		User userToDelete = userRepository.findById(userId).get();
+		
+		if (userToDelete != null) {
+			userRepository.delete(userToDelete);
+		}
 	}
 }

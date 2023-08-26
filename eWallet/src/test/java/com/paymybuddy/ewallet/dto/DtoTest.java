@@ -14,11 +14,11 @@ public class DtoTest {
 		
 		assertThat(userLoginDto.toString()).isNotBlank();
 	}
-
+	
 	@Test
-	public void userLoginResponseDtoToString_isNotBlank() {
-		UserLoginResponseDto userLoginDto = DtoInstanceBuilder.createUserLoginResponseDto(1, "John", "Smith", "john.smith@mrandmrs.smth");
+	public void userProfileDtoToString_isNotBlank() {
+		UserProfileDto userProfileDto = DtoInstanceBuilder.createUserProfileDto("John", "Smith", "john.smith@mrandmrs.smth", "NotAnHashedAndSaledPwd");
 		
-		assertThat(userLoginDto.toString()).isNotBlank();
+		assertThat(userProfileDto.toString()).isNotBlank();
 	}
 }

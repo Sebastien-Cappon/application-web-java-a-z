@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.paymybuddy.ewallet.model.Transaction;
 import com.paymybuddy.ewallet.model.User;
@@ -69,15 +70,25 @@ public class TransactionController {
 	}
 	
 	@PostMapping("/transaction")
-	@ResponseStatus(HttpStatus.CREATED)
-	public Transaction addTransaction(@RequestBody Transaction transaction) throws Exception {
-		return iTransactionService.addTransaction(transaction);
+	public ResponseEntity<Transaction> addTransaction(@RequestBody Transaction transaction) throws Exception {
+		Transaction createdTransaction = iTransactionService.addTransaction(transaction); 
+		
+		if(createdTransaction == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<Transaction>(createdTransaction, HttpStatus.CREATED);
+		}
 	}
 	
 	@PutMapping("/transaction")
-	@ResponseStatus(HttpStatus.OK)
-	public Transaction updateTransactionById(@RequestBody Transaction transaction) {
-		return iTransactionService.updateTransactionById(transaction);
+	public ResponseEntity<Transaction> updateTransactionById(@RequestBody Transaction transaction) {
+		Transaction updatedTransaction = iTransactionService.updateTransactionById(transaction);
+		
+		if(updatedTransaction == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<Transaction>(updatedTransaction, HttpStatus.OK);
+		}
 	}
 	
 	@DeleteMapping("transaction")

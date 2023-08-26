@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.paymybuddy.ewallet.model.Transaction;
 import com.paymybuddy.ewallet.model.User;
 import com.paymybuddy.ewallet.repository.TransactionRepository;
+import com.paymybuddy.ewallet.repository.UserRepository;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -19,6 +20,8 @@ public class TransactionService implements ITransactionService {
 
 	@Autowired
 	private TransactionRepository transactionRepository;
+	@Autowired
+	private UserRepository userRepository;
 	@Autowired
 	private IUserService iUserService;
 
@@ -87,29 +90,35 @@ public class TransactionService implements ITransactionService {
 	}
 	
 	public Transaction addTransaction(Transaction transaction) throws Exception{
-		double transactionAmount = transaction.getAmount();
-		double transactionFee = Math.round(transactionAmount*0.5)/100.0;
+		if (transaction != null && transaction.getSender() != null && transaction.getReceiver() != null && transaction.getAmount() > 0
+				&& userRepository.findById(transaction.getSender().getId()).isPresent()
+				&& userRepository.findById(transaction.getReceiver().getId()).isPresent()) {
+			double transactionAmount = transaction.getAmount();
+			double transactionFee = Math.round(transactionAmount*0.5)/100.0;
+			
+			User sender = userRepository.findById(transaction.getSender().getId()).get();
+			sender.setAmount(sender.getAmount() - transactionAmount - transactionFee);
+			iUserService.updateAmount(sender.getId(), sender.getAmount());
+	
+			User receiver = userRepository.findById(transaction.getReceiver().getId()).get();
+			receiver.setAmount(receiver.getAmount() + transactionAmount);
+			iUserService.updateAmount(receiver.getId(), receiver.getAmount());
+			
+			transaction.setDate(LocalDate.now());
+			transaction.setSender(sender);
+			transaction.setReceiver(receiver);
+			transaction.setFee(transactionFee);
+			
+			return transactionRepository.save(transaction);
+		}
 		
-		User sender = iUserService.getUserById(transaction.getSender().getId());
-		sender.setAmount(sender.getAmount() - transactionAmount - transactionFee);
-		iUserService.updateUser(sender);
-
-		User receiver = iUserService.getUserById(transaction.getReceiver().getId());
-		receiver.setAmount(receiver.getAmount() + transactionAmount);
-		iUserService.updateUser(receiver);
-		
-		transaction.setDate(LocalDate.now());
-		transaction.setSender(sender);
-		transaction.setReceiver(receiver);
-		transaction.setFee(transactionFee);
-		
-		return transactionRepository.save(transaction);
+		return null;
 	}
 	
 	public Transaction updateTransactionById(Transaction transaction) {
-		Transaction transactionToUpdate = this.getTransactionById(transaction.getId());
-		
-		if(transactionToUpdate != null) {
+		if(transactionRepository.findById(transaction.getId()).isPresent()) {
+			Transaction transactionToUpdate = transactionRepository.findById(transaction.getId()).get();
+			
 			transactionToUpdate.setDescription(transaction.getDescription());
 			return transactionRepository.save(transactionToUpdate);
 		}

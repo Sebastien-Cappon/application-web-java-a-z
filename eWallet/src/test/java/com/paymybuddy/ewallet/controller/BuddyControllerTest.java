@@ -15,8 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymybuddy.ewallet.model.Buddy;
@@ -92,6 +94,15 @@ public class BuddyControllerTest {
 			.andExpect(jsonPath("$.id.firstUser.amount").value(30.0))
 			.andExpect(jsonPath("$.id.firstUser.active").value(true))
 			.andExpect(jsonPath("$.id.secondUser").isNotEmpty());
+	}
+	
+	@Test
+	public void addBuddy_shouldThrowBadRequest() throws Exception {
+		when(buddyService.addBuddy(any(Buddy.class)))
+			.thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+		
+		mockMvc.perform(post("/buddy"))
+			.andExpect(status().isBadRequest());
 	}
 	
 	@Test

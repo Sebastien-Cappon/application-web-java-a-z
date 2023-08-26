@@ -8,19 +8,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.paymybuddy.ewallet.dto.UserLoginDto;
-import com.paymybuddy.ewallet.dto.UserLoginResponseDto;
+import com.paymybuddy.ewallet.dto.UserProfileDto;
 import com.paymybuddy.ewallet.model.User;
 import com.paymybuddy.ewallet.service.IUserService;
+import com.paymybuddy.ewallet.views.UserView;
 
 @RestController
 @CrossOrigin(origins="http://localhost:4200")
@@ -47,40 +49,84 @@ public class UserController {
 		}
 	}
 
-	@GetMapping("/user")
+	@JsonView(UserView.LoginView.class)
+	@GetMapping("/users/login/{id}")
 	@ResponseBody
-	public User getUserById(@RequestParam int id) {
-		return iUserService.getUserById(id);
+	public User getUserById_forLoginPage(@PathVariable("id") int userId) {
+		return iUserService.getUserById(userId);
 	}
 
+	@JsonView(UserView.ProfileView.class)
+	@GetMapping("/users/profile/{id}")
+	@ResponseBody
+	public User getUserById_forProfilePage(@PathVariable("id") int userId) {
+		return iUserService.getUserById(userId);
+	}
+
+
+	@JsonView(UserView.LoginView.class)
 	@PostMapping("/login")
 	@ResponseBody
-	public ResponseEntity<UserLoginResponseDto> postUserByEmailAndPassword(@RequestBody UserLoginDto userLoginDto) throws Exception {
-		UserLoginResponseDto loggedUser = iUserService.postUserByEmailAndPassword(userLoginDto);
+	public ResponseEntity<User> postUserByEmailAndPassword(@RequestBody UserLoginDto userLoginDto) throws Exception {
+		User loggedUser = iUserService.postUserByEmailAndPassword(userLoginDto);
 		
 		if(loggedUser == null) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 		} else {
-			return new ResponseEntity<UserLoginResponseDto>(loggedUser, HttpStatus.OK);
+			return new ResponseEntity<User>(loggedUser, HttpStatus.OK);
 		}
 	}
 
 	@PostMapping("/user")
 	@ResponseBody
-	@ResponseStatus(HttpStatus.CREATED)
-	public User addUser(@RequestBody User user) throws Exception {
-		return iUserService.addUser(user);
+	public ResponseEntity<User> addUser(@RequestBody User user) throws Exception {
+		User createdUser = iUserService.addUser(user);
+		
+		if(createdUser == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<User>(createdUser, HttpStatus.CREATED);
+		}
 	}
 
-	@PutMapping("/user")
+	@PutMapping("/users/{id}/profile")
 	@ResponseBody
-	@ResponseStatus(HttpStatus.OK)
-	public User updateUser(@RequestBody User update) throws Exception {
-		return iUserService.updateUser(update);
+	public ResponseEntity<Integer> updateProfile(@PathVariable("id") int userId, @RequestBody UserProfileDto userProfileDto) throws Exception {
+		Integer updatedUser = iUserService.updateProfile(userId, userProfileDto);  
+		
+		if(updatedUser == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<Integer>(HttpStatus.OK);
+		} 
+	}
+	
+	@PutMapping("/users/{id}/active")
+	@ResponseBody
+	public ResponseEntity<Integer> updateActive(@PathVariable("id") int userId, @RequestBody boolean isActive) throws Exception {
+		Integer updatedUser = iUserService.updateActive(userId, isActive);  
+		
+		if(updatedUser == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<Integer>(HttpStatus.OK);
+		} 
+	}
+	
+	@PutMapping("/users/{id}/amount")
+	@ResponseBody
+	public ResponseEntity<Integer> updateAmount(@PathVariable("id") int userId, @RequestBody double amount) throws Exception {
+		Integer updatedUser = iUserService.updateAmount(userId, amount);  
+		
+		if(updatedUser == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<Integer>(HttpStatus.OK);
+		} 
 	}
 
-	@DeleteMapping("/user")
-	public void deleteUser(@RequestBody User user) {
-		iUserService.deleteUser(user);
+	@DeleteMapping("/users/{id}")
+	public void deleteUserById(@PathVariable("id") int userId) {
+		iUserService.deleteUserById(userId);
 	}
 }

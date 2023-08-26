@@ -2,6 +2,9 @@ package com.paymybuddy.ewallet.model;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.paymybuddy.ewallet.views.UserView;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,20 +19,28 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonView(UserView.IdView.class)
 	@Column(name = "user_id")
 	private int id;
+	@JsonView(UserView.FirstnameView.class)
 	@Column(name = "user_firstname")
 	private String firstname;
+	@JsonView(UserView.LastnameView.class)
 	@Column(name = "user_lastname")
 	private String lastname;
+	@JsonView(UserView.EmailView.class)
 	@Column(name = "user_email")
 	private String email;
+	@JsonView(UserView.SocialView.class)
 	@Column(name = "user_social")
 	private boolean social;
+	@JsonView(UserView.PasswordView.class)
 	@Column(name = "user_password")
 	private String password;
+	@JsonView(UserView.AmountView.class)
 	@Column(name = "user_amount")
 	private double amount;
+	@JsonView(UserView.ActiveView.class)
 	@Column(name = "user_active")
 	private boolean active;
 	

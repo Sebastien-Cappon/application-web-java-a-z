@@ -10,6 +10,9 @@ public class MySqlQueries {
 	
 	public static final String allUser_orderByNameAsc = "SELECT * FROM user ORDER BY user.user_lastname ASC, user.user_firstname ASC, user.user_id ASC";
 	public static final String allUser_orderByNameDesc = "SELECT * FROM user ORDER BY user.user_lastname DESC, user.user_firstname DESC, user.user_id ASC";
+	public static final String updateProfileById = "UPDATE user  SET user_firstname = ?2, user_lastname = ?3, user_email = ?4, user_password = ?5  WHERE user_id = ?1 ;";
+	public static final String updateActiveById = "UPDATE user  SET user_active = ?2  WHERE user_id = ?1 ;";
+	public static final String updateAmountById = "UPDATE user  SET user_amount = ?2  WHERE user_id = ?1 ;";
 	
 	public static final String allBuddiesByUser = "SELECT * FROM user_user WHERE buddies_user_id = ?1 OR buddies_buddy_id = ?1";
 	public static final String deleteBuddiesByUser = "DELETE FROM user_user WHERE buddies_user_id = ?1 OR buddies_buddy_id = ?1";
