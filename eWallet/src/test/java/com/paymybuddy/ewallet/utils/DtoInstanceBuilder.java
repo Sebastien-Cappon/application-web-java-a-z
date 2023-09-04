@@ -1,9 +1,11 @@
 package com.paymybuddy.ewallet.utils;
 
+import com.paymybuddy.ewallet.dto.BuddyAddDto;
 import com.paymybuddy.ewallet.dto.UserLoginDto;
 import com.paymybuddy.ewallet.dto.UserProfileDto;
 
 public class DtoInstanceBuilder {
+	
 	public static UserLoginDto createUserLoginDto(String email, String password) {
 		UserLoginDto userLoginDto = new UserLoginDto();
 		userLoginDto.setEmail(email);
@@ -20,5 +22,13 @@ public class DtoInstanceBuilder {
 		userProfileDto.setPassword(password);
 
 		return userProfileDto;
+	}
+	
+	public static BuddyAddDto createBuddyAddDto(int id, String email) {
+		BuddyAddDto buddyAddDto = new BuddyAddDto();
+		buddyAddDto.setUserId(id);
+		buddyAddDto.setNewBuddyEmail(email);
+
+		return buddyAddDto;
 	}
 }

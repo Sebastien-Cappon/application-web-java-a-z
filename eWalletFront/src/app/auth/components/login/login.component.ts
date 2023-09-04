@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { User } from 'src/app/core/models/user.model';
+import { emailPatternValidator } from 'src/app/shared/validators/emailPattern.validator';
 
 @Component({
   selector: 'app-login',
@@ -35,7 +36,7 @@ export class LoginComponent {
   }
 
   private initLoginFormControls(): void {
-    this.loginEmailCtrl = this.formBuilder.control('', [Validators.required, Validators.email, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]);
+    this.loginEmailCtrl = this.formBuilder.control('', [Validators.required, Validators.email, emailPatternValidator()]);
   }
 
   private initLoginForm(): void {

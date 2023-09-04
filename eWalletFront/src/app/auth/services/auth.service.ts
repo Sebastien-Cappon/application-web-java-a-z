@@ -11,7 +11,7 @@ export class AuthService {
     constructor(private httpClient: HttpClient) { }
 
     getUserById(userId: number): Observable<User> {
-        return this.httpClient.get<User>(`${environment.apiUrl}/users/${userId}/login`);
+        return this.httpClient.get<User>(`${environment.apiUrl}/users/login/${userId}`);
     }
 
     login(authValue: AuthValue): Observable<boolean> {
@@ -33,7 +33,7 @@ export class AuthService {
         sessionStorage.removeItem('authToken');
         sessionStorage.removeItem('currentUserId');
         
-        return (sessionStorage.getItem('currentUser') == null && sessionStorage.getItem('authToken') == null && sessionStorage.getItem('currentUserId') == null);
+        return (sessionStorage.getItem('authToken') == null && sessionStorage.getItem('currentUserId') == null);
     }
 
     setToken(length: number): string {

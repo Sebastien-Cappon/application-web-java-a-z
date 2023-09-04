@@ -21,4 +21,11 @@ public class DtoTest {
 		
 		assertThat(userProfileDto.toString()).isNotBlank();
 	}
+
+	@Test
+	public void buddyAddDtoToString_isNotBlank() {
+		BuddyAddDto buddyAddDto = DtoInstanceBuilder.createBuddyAddDto(1, "john.smith@mrandmrs.smth");
+		
+		assertThat(buddyAddDto.toString()).isNotBlank();
+	}
 }

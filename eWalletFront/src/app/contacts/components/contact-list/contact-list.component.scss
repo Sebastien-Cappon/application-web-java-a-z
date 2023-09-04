@@ -1,0 +1,73 @@
+mat-card {
+    width: 800px;
+}
+
+mat-nav-list a:nth-child(2n+1) {
+    background-color: #e5f6fe;
+}
+
+mat-nav-list {
+    padding: 0;
+
+    .buddiesTabRow {
+        padding: 0 6px 0 0;
+
+        div {
+            display: inline-block;
+
+            a {
+                text-decoration: none;
+                font-size: 14px;
+                color: rgba(0, 0, 0, .87);
+                
+                p {
+                    height: 45px;
+                    line-height: 45px;
+                    margin: 0;
+                }
+
+                .inactiveBuddy {
+                    font-style: italic;
+                    color: rgba(0, 0, 0, .50);
+                }
+            }
+        }
+    
+        div:first-child {
+            width: 33%;
+            padding-left: 2%;
+        }
+    
+        div:nth-child(2) {
+            width: 50%
+        }
+    
+        div:last-child {
+            width: 15%;
+            text-align: right;
+        }
+
+        button {
+            width: 100%;
+        }
+        
+        #activeButton {
+            background-color: #feecea;
+        }
+    }
+}
+
+mat-form-field {
+    width: 100%;
+    margin-top: 16px;
+    margin-bottom: -16px;
+
+    input {
+        width: 90%;
+    }
+
+    button {
+        position: absolute;
+        top: 4px; right: 0;
+    }
+}

@@ -51,14 +51,6 @@ mat-card-content {
         width: 100%;
     }
 
-    mat-form-field mat-error {
-        margin-top: -4px;
-        margin-right: -16px;
-
-        font-size: 12px;
-        text-align: right;
-    }
-
     h2 {
         margin-top: 24px;
 
@@ -77,11 +69,19 @@ mat-card-actions {
         margin: 0 auto;
         font-size: 14px;
         text-transform: uppercase;
-
-        mat-spinner {
-            width: 20px !important;
-        }
     }
+}
+
+button mat-spinner {
+    width: 20px !important;
+}
+
+mat-form-field mat-error {
+    margin-top: -4px;
+    margin-right: -16px;
+
+    font-size: 12px;
+    text-align: right;
 }
 
 .groupControlError {

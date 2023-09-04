@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { ProfileService } from '../../services/profile.service';
-import { UsersService } from 'src/app/shared/services/users.service';
 import { User } from 'src/app/core/models/user.model';
-import { Observable, delay, map, tap } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { confirmEqualsValidator } from '../../validators/confirmEquals.validator';
-import { emailPatternValidator } from '../../validators/emailPattern.validator';
+import { confirmEqualsValidator } from 'src/app/shared/validators/confirmEquals.validator';
+import { emailPatternValidator } from 'src/app/shared/validators/emailPattern.validator';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,7 +16,6 @@ export class ProfileComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private usersService: UsersService,
     private profileService: ProfileService,
     private router: Router
   ) { }
@@ -47,10 +45,14 @@ export class ProfileComponent {
   currentUser$!: Observable<User>;
   
   ngOnInit(): void {
-    this.currentUser$ = this.profileService.getUserById(this.currentUserId);
+    this.initObservables();
     this.initProfileFormControls();
     this.initProfileForm();
     this.initProfileFormObservables();
+  }
+
+  private initObservables() {
+    this.currentUser$ = this.profileService.getUserById(this.currentUserId);
   }
 
   private initProfileFormControls(): void {
@@ -155,7 +157,7 @@ export class ProfileComponent {
     if(ctrl.hasError('required')) {
       return 'You must confirm your previous input.';
     } else if (ctrl.hasError('email') || ctrl.hasError('emailPatternValidator')){
-      return 'This input filed require a valid email address.'
+      return 'This input field require a valid email address.'
     } else {
       return 'An error has occured.';
     }
@@ -173,7 +175,6 @@ export class ProfileComponent {
   onCompleteDelete() {
     this.isConfirmingDeletion = false;
     this.isLoading = true;
-    //this.profileService.deleteUserById(this.currentUserId).pipe(
     this.profileService.disableUserById(this.currentUserId).pipe(
       tap(deleted => {
         this.isLoading = false;
@@ -200,7 +201,9 @@ export class ProfileComponent {
       tap(updated => {
         this.isLoading = false;
         if (updated) {
-          window.location.reload();
+          this.profileForm.reset();
+          this.isEditing = false;
+          this.initObservables();
         }
       })
     ).subscribe()

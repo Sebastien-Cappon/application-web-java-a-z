@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from './material.module';
 import { UsersService } from './services/users.service';
-import { UsersResolver } from './resolvers/users.resolver';
 
 @NgModule({
   declarations: [
@@ -16,8 +15,7 @@ import { UsersResolver } from './resolvers/users.resolver';
     MaterialModule
   ],
   providers: [
-    UsersService,
-    UsersResolver
+    UsersService
   ]
 })
 export class SharedModule { }

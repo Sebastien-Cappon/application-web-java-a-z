@@ -11,7 +11,7 @@ export class ProfileService {
     constructor(private httpClient: HttpClient) { }
 
     getUserById(userId: number): Observable<User> {
-        return this.httpClient.get<User>(`${environment.apiUrl}/users/${userId}/profile`);
+        return this.httpClient.get<User>(`${environment.apiUrl}/users/profile/${userId}`);
     }
 
     updateProfile(userId: number, formValue: ProfileValue): Observable<boolean> {

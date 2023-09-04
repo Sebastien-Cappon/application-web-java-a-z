@@ -78,13 +78,13 @@
         </mat-card-content>
         <mat-card-actions>
             <button mat-flat-button color="warn" *ngIf="!isDeleting && !isConfirmingDeletion" (click)="onDelete()" [disabled]="isEditing">DELETE ACCOUNT</button>
-            <button mat-flat-button color="warn" *ngIf="isDeleting" (click)="onConfirmDelete()" [disabled]="isEditing">Confirm edition ?</button>
+            <button mat-flat-button color="warn" *ngIf="isDeleting" (click)="onConfirmDelete()" [disabled]="isEditing">Confirm deletion ?</button>
             <button mat-flat-button color="warn" *ngIf="isConfirmingDeletion" (click)="onCompleteDelete()" [disabled]="isLoading || isEditing">
                 <span *ngIf="!isLoading" style="color: #FFF;">Complete deletion !</span>
                 <mat-spinner *ngIf="isLoading" color="warn" mode="indeterminate"></mat-spinner>
             </button>
             <button mat-stroked-button color="accent" *ngIf="!isEditing" (click)="onEdit()">Start editing</button>
-            <button mat-flat-button color="primary" *ngIf="isEditing" (click)="onCompleteEdit()" [disabled]="isLoading || profileForm.invalid">
+            <button mat-flat-button color="primary" *ngIf="isEditing" (click)="onCompleteEdit()" [disabled]="isLoading || profileForm.invalid || profileEmailForm.invalid || profilePasswordForm.invalid">
                 <span *ngIf="!isLoading" style="color: #FFF;">Confirm edition</span>
                 <mat-spinner *ngIf="isLoading" color="accent" mode="indeterminate"></mat-spinner>
             </button>
