@@ -4,10 +4,22 @@
             <mat-card-title background-color="primary"><h1>{{ buddy.firstname }} {{ buddy.lastname }}</h1></mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            
+            <div class="transactionHeader">
+                <div>Date
+                    <button *ngIf="!isOrderedByDateAsc" (click)="onOrderHistoryBetweenByDate()"><mat-icon>arrow_drop_down</mat-icon></button>
+                    <button *ngIf="isOrderedByDateAsc" (click)="onOrderHistoryBetweenByDate()"><mat-icon>arrow_drop_up</mat-icon></button>
+                </div>
+                <div>Buddy</div>
+                <div>Amount
+                    <button *ngIf="!isOrderedByAmountAsc" (click)="onOrderHistoryBetweenByAmount()"><mat-icon>arrow_drop_down</mat-icon></button>
+                    <button *ngIf="isOrderedByAmountAsc" (click)="onOrderHistoryBetweenByAmount()"><mat-icon>arrow_drop_up</mat-icon></button>
+                </div>
+                <div>Fee</div>
+            </div>
+            <app-transaction-list></app-transaction-list>
         </mat-card-content>
         <mat-card-actions>
-            
+            <button mat-stroked-button color="warn" (click)="onBack()" >Back</button>
         </mat-card-actions>
     </mat-card>
 </div>

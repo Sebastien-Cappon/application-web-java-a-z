@@ -2,6 +2,8 @@ package com.paymybuddy.ewallet.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,18 +27,30 @@ public class BuddyService implements IBuddyService {
 		return buddyRepository.findAll();
 	}
 	
-	public List<User> getBuddiesByUser(int userId) {	
-		List<User> myBuddyList = new ArrayList<>();
-		
-		for (Buddy buddy : buddyRepository.getBuddiesByUser(userId)) {
-			if (buddy.getId().getFirstUser().getId() != userId) {
-				myBuddyList.add(buddy.getId().getFirstUser());
-			} else {
-				myBuddyList.add(buddy.getId().getSecondUser());
+	public List<User> getBuddiesByUser(int userId) {
+		if(userRepository.findById(userId).isPresent()) {
+			List<User> myBuddyList = new ArrayList<>();
+			TreeMap<String, Integer> buddies = new TreeMap<>();
+			
+			for (Buddy buddy : buddyRepository.getBuddiesByUser(userId)) {
+				if (buddy.getId().getFirstUser().getId() != userId) {
+					String buddyName = buddy.getId().getFirstUser().getFirstname() + buddy.getId().getFirstUser().getLastname();
+					buddies.put(buddyName, buddy.getId().getFirstUser().getId());
+				} else {
+					String buddyName = buddy.getId().getSecondUser().getFirstname() + buddy.getId().getSecondUser().getLastname();
+					buddies.put(buddyName, buddy.getId().getSecondUser().getId());
+				}
 			}
+			
+			Set<String> keys = buddies.keySet();
+			for(String key: keys) {
+				myBuddyList.add(userRepository.findById(buddies.get(key)).get());
+			}
+			
+			return myBuddyList;
 		}
 		
-		return myBuddyList;
+		return null;
 	}
 	
 	public User addBuddy(BuddyAddDto buddyAddDto) {

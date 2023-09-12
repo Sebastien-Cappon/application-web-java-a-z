@@ -62,15 +62,6 @@ export class ProfileComponent {
     this.initProfilePasswordFormControl();
   }
 
-  private initProfileForm(): void {
-    this.profileForm = this.formBuilder.group({
-      firstname: this.profileFirstnameCtrl,
-      lastname: this.profileLastnameCtrl,
-      email: this.profileEmailForm.get('email'),
-      password: this.profilePasswordForm.get('password')
-    })
-  }
-
   private initProfileEmailFormControl() {
     this.profileEmailCtrl = this.formBuilder.control('', [Validators.email, emailPatternValidator()]);
     this.profileConfirmEmailCtrl = this.formBuilder.control('');
@@ -91,6 +82,15 @@ export class ProfileComponent {
     }, {
       validators: [confirmEqualsValidator('password', 'confirmPassword')]
     });
+  }
+
+  private initProfileForm(): void {
+    this.profileForm = this.formBuilder.group({
+      firstname: this.profileFirstnameCtrl,
+      lastname: this.profileLastnameCtrl,
+      email: this.profileEmailForm.get('email'),
+      password: this.profilePasswordForm.get('password')
+    })
   }
 
   private initProfileFormObservables() {

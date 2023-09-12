@@ -19,8 +19,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
     min-height: 768px;
+    padding-top: 32px;
 }
 
 mat-card-header {
@@ -90,4 +90,57 @@ mat-form-field mat-error {
 
     font-size: 12px;
     text-align: center;
+}
+
+.emptyObservableDiv {
+    height: 200px;
+    line-height: 200px;
+    margin: 0;
+
+    color: #d3d3d3;
+    font-size: 18px;
+    text-align: center;
+}
+
+.transactionHeader {
+    padding: 16px;
+
+    div {
+        display: inline-block;
+        
+        button {
+            margin-bottom: -3px !important;
+            padding: 0;
+            width: 19px;
+            height: 19px;
+            line-height: 19px;
+
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            
+            background: none;
+
+            mat-icon {
+                height: 19px;
+                line-height: 19px;
+                margin: -4px;
+            }
+        }
+    }
+
+    div:first-child {
+        width: 35%;
+    }
+    div:nth-child(2) {
+        width: 32.5%;
+    }
+    div:nth-child(3) {
+        width: 19.5%;
+        text-align: center;
+    }
+    div:last-child {
+        width: 13%;
+        text-align: center;
+    }
 }

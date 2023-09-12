@@ -4,6 +4,9 @@ import java.time.LocalDate;
 
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.paymybuddy.ewallet.views.TransactionView;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,20 +23,27 @@ public class Transaction {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonView(TransactionView.IdView.class)
 	@Column(name = "transaction_id")
 	private int id;
+	@JsonView(TransactionView.DateView.class)
 	@Column(name = "transaction_date")
 	private LocalDate date;
+	@JsonView(TransactionView.SenderView.class)
 	@ManyToOne()
 	@JoinColumn(name = "transaction_sender")
 	private User sender;
+	@JsonView(TransactionView.ReceiverView.class)
 	@ManyToOne()
 	@JoinColumn(name = "transaction_receiver")
 	private User receiver;
 	@Column(name = "transaction_amount")
+	@JsonView(TransactionView.AmountView.class)
 	private double amount;
+	@JsonView(TransactionView.FeeView.class)
 	@Column(name = "transaction_fee")
 	private double fee;
+	@JsonView(TransactionView.DescriptionView.class)
 	@Column(name = "transaction_description")
 	private String description;
 	

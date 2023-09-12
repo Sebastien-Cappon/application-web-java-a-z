@@ -4,4 +4,3 @@ export class ProfileValue {
     email!: string;
     password!: string;
 }
-

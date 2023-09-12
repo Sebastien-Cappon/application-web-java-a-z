@@ -28,8 +28,6 @@ export class ContactListComponent {
   isLoading = false;
 
   ngOnInit(): void {
-    this.contactsService.getMyBuddies(this.currentUserId);
-
     this.initNewBuddyFormControls();
     this.initNewBuddyForm();
     this.initObservables();
@@ -73,8 +71,8 @@ export class ContactListComponent {
     this.contactsService.addBuddy(this.newBuddyForm.value).pipe(
       tap(buddied => {
         if (buddied) {
-          this.initObservables();
           this.newBuddyEmailCtrl.reset();
+          this.initObservables();
         }
       })
     ).subscribe();

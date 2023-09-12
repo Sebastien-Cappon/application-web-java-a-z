@@ -9,6 +9,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatListModule } from '@angular/material/list';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatAutocompleteModule } from '@angular/material/autocomplete'
 
 @NgModule({
     exports: [
@@ -22,6 +24,8 @@ import { MatListModule } from '@angular/material/list';
         MatGridListModule,
         MatSidenavModule,
         MatListModule,
+        MatExpansionModule,
+        MatAutocompleteModule
     ]
 })
 export class MaterialModule { }

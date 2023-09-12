@@ -10,6 +10,8 @@ export class ContactsService {
 
     constructor(private httpClient: HttpClient) { }
 
+    private isBuddiesLoaded = false;
+
     private _buddies$ = new BehaviorSubject<User[]>([]);
     get buddies$(): Observable<User[]> {
         return this._buddies$.asObservable();
@@ -18,12 +20,18 @@ export class ContactsService {
     getMyBuddies(userId: number) {
         this.httpClient.get<User[]>(`${environment.apiUrl}/mybuddies/${userId}`).pipe(
             tap(buddies => {
+                this.isBuddiesLoaded = true;
                 this._buddies$.next(buddies);
             })
         ).subscribe();
     }
 
-    getBuddyById(id: number): Observable<User> {
+    getBuddyById(userId: number, id: number): Observable<User> {
+        if(!this.isBuddiesLoaded) {
+            this.getMyBuddies(userId);
+            this.isBuddiesLoaded = true;
+        }
+
         return this.buddies$.pipe(
             map(buddies => buddies.filter(buddy => buddy.id === id)[0])
         );

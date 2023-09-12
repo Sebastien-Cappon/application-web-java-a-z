@@ -23,15 +23,22 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 	@Query(value = MySqlQueries.allTransaction_orderByReceiverNameDesc, nativeQuery = true)
 	List<Transaction> getTransactions_orderByReceiverNameDesc();
 
-	List<Transaction> findBySender(User sender);
-	List<Transaction> findBySenderOrderByDateAsc(User sender);
-	List<Transaction> findBySenderOrderByDateDesc(User sender);
-	List<Transaction> findBySenderOrderByAmountAsc(User sender);
-	List<Transaction> findBySenderOrderByAmountDesc(User sender);
-	@Query(value = MySqlQueries.allTransactionBySender_orderByReceiverNameAsc, nativeQuery = true)
-	List<Transaction> getTransactionsBySender_orderByReceiverNameAsc(int senderId);
-	@Query(value = MySqlQueries.allTransactionBySender_orderByReceiverNameDesc, nativeQuery = true)
-	List<Transaction> getTransactionsBySender_orderByReceiverNameDesc(int senderId);
+	List<Transaction> findBySenderOrReceiverOrderByIdDesc(User firstUser, User secondUser);
+	List<Transaction> findBySenderOrReceiverOrderByDateAsc(User firstUser, User secondUser);
+	List<Transaction> findBySenderOrReceiverOrderByDateDesc(User firstUser, User secondUser);
+	List<Transaction> findBySenderOrReceiverOrderByAmountAsc(User firstUser, User secondUser);
+	List<Transaction> findBySenderOrReceiverOrderByAmountDesc(User firstUser, User secondUser);
+	
+	@Query(value = MySqlQueries.allTransactionBySenderAndReceiver, nativeQuery = true)
+	List<Transaction> getTransactionsBetweenUsers(int firstUserId, int secondUserId);
+	@Query(value = MySqlQueries.allTransactionBySenderAndReceiver_orderByDateAsc, nativeQuery = true)
+	List<Transaction> getTransactionsBetweenUsers_orderByDateAsc(int firstUserId, int secondUserId);
+	@Query(value = MySqlQueries.allTransactionBySenderAndReceiver_orderByDateDesc, nativeQuery = true)
+	List<Transaction> getTransactionsBetweenUsers_orderByDateDesc(int firstUserId, int secondUserId);
+	@Query(value = MySqlQueries.allTransactionBySenderAndReceiver_orderByAmountAsc, nativeQuery = true)
+	List<Transaction> getTransactionsBetweenUsers_orderByAmountAsc(int firstUserId, int secondUserId);
+	@Query(value = MySqlQueries.allTransactionBySenderAndReceiver_orderByAmountDesc, nativeQuery = true)
+	List<Transaction> getTransactionsBetweenUsers_orderByAmountDesc(int firstUserId, int secondUserId);
 
 	@Transactional
 	@Modifying

@@ -23,6 +23,21 @@ public class DtoTest {
 	}
 
 	@Test
+	public void userTransactionDtoToString_isNotBlank() {
+		UserTransactionDto userTransactionDto = DtoInstanceBuilder.createUserTransactionDto(1, "John", "Smith", "john.smith@mrandmrs.smth", true);
+		
+		assertThat(userTransactionDto.toString()).isNotBlank();
+	}
+		
+	@Test
+	public void transactionAddDtoToString_isNotBlank() {
+		UserTransactionDto receiver = DtoInstanceBuilder.createUserTransactionDto(2, "Jane", "Smith", "jane.smith@mrandmrs.smth", true);
+		TransactionAddDto transactionAddDto = DtoInstanceBuilder.createTransactionAddDto(1, receiver, 2.55, "Test transaction");
+		
+		assertThat(transactionAddDto.toString()).isNotBlank();
+	}
+	
+	@Test
 	public void buddyAddDtoToString_isNotBlank() {
 		BuddyAddDto buddyAddDto = DtoInstanceBuilder.createBuddyAddDto(1, "john.smith@mrandmrs.smth");
 		

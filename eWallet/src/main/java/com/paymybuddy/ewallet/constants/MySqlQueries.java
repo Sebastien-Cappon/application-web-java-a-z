@@ -4,8 +4,13 @@ public class MySqlQueries {
 
 	public static final String allTransaction_orderByReceiverNameAsc = "SELECT * FROM transaction JOIN user ON transaction.transaction_receiver = user.user_id ORDER BY user.user_lastname ASC, user.user_firstname ASC, transaction_date DESC;";
 	public static final String allTransaction_orderByReceiverNameDesc = "SELECT * FROM transaction JOIN user ON transaction.transaction_receiver = user.user_id ORDER BY user.user_lastname DESC, user.user_firstname DESC, transaction_date DESC;";
-	public static final String allTransactionBySender_orderByReceiverNameAsc = "SELECT * FROM transaction JOIN user ON transaction.transaction_receiver = user.user_id WHERE transaction_sender = ? ORDER BY user.user_lastname ASC, user.user_firstname ASC, transaction_date DESC;";
-	public static final String allTransactionBySender_orderByReceiverNameDesc = "SELECT * FROM transaction JOIN user ON transaction.transaction_receiver = user.user_id WHERE transaction_sender = ? ORDER BY user.user_lastname DESC, user.user_firstname DESC, transaction_date DESC;";
+	
+	public static final String allTransactionBySenderAndReceiver = "SELECT * FROM transaction WHERE transaction_sender = ?1 AND transaction_receiver = ?2 OR transaction_sender = ?2 AND transaction_receiver = ?1 ORDER BY transaction_date DESC;";
+	public static final String allTransactionBySenderAndReceiver_orderByDateAsc = "SELECT * FROM transaction WHERE transaction_sender = ?1 AND transaction_receiver = ?2 OR transaction_sender = ?2 AND transaction_receiver = ?1 ORDER BY transaction_date ASC;";
+	public static final String allTransactionBySenderAndReceiver_orderByDateDesc = "SELECT * FROM transaction WHERE transaction_sender = ?1 AND transaction_receiver = ?2 OR transaction_sender = ?2 AND transaction_receiver = ?1 ORDER BY transaction_date DESC;";
+	public static final String allTransactionBySenderAndReceiver_orderByAmountAsc = "SELECT * FROM transaction WHERE transaction_sender = ?1 AND transaction_receiver = ?2 OR transaction_sender = ?2 AND transaction_receiver = ?1 ORDER BY transaction_amount ASC;";
+	public static final String allTransactionBySenderAndReceiver_orderByAmountDesc = "SELECT * FROM transaction WHERE transaction_sender = ?1 AND transaction_receiver = ?2 OR transaction_sender = ?2 AND transaction_receiver = ?1 ORDER BY transaction_amount DESC;";
+	
 	public static final String updateTransactionById = "UPDATE transaction SET transaction_description = ?2 WHERE transaction_id = ?1 ;";
 	
 	public static final String allUser_orderByNameAsc = "SELECT * FROM user ORDER BY user.user_lastname ASC, user.user_firstname ASC, user.user_id ASC";

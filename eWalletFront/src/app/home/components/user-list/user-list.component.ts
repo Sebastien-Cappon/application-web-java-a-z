@@ -19,10 +19,10 @@ export class UserListComponent {
 
   ngOnInit(): void {
     this.initObservables();
-    this.usersService.getUsers();
   }
 
   private initObservables() {
+    this.usersService.getUsers();
     this.users$ = this.usersService.users$;
   }
 }

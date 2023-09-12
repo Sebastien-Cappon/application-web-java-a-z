@@ -26,6 +26,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paymybuddy.ewallet.dto.TransactionAddDto;
 import com.paymybuddy.ewallet.model.Transaction;
 import com.paymybuddy.ewallet.model.User;
 import com.paymybuddy.ewallet.service.TransactionService;
@@ -154,14 +155,12 @@ public class TransactionControllerTest {
 	}
 
 	@Test
-	public void getTransactionsBySender_shouldReturnOk() throws Exception {
-		when(transactionService.getTransactionsBySender(any(User.class)))
+	public void getTransactionsByUser_shouldReturnOk() throws Exception {
+		when(transactionService.getTransactionsByUser(any(Integer.class)))
 			.thenReturn(transactionResponseList);
 	
-		mockMvc.perform(get("/history")
-				.accept(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(senderResponse))
-				.contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/history/{id}", "1")
+				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.[*].id").isNotEmpty())
 			.andExpect(jsonPath("$.[*].date").isNotEmpty())
@@ -173,104 +172,92 @@ public class TransactionControllerTest {
 	}
 	
 	@Test
-	public void getTransactionsBySender_orderByDateAsc_shouldReturnOk() throws Exception {
+	public void getTransactionsByUser_orderByDateAsc_shouldReturnOk() throws Exception {
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "date");
 		sortByAndOrderParams.add("order", "asc");
 		
-		when(transactionService.getTransactionsBySender_orderByDateAsc(any(User.class)))
+		when(transactionService.getTransactionsByUser_orderByDateAsc(any(Integer.class)))
 			.thenReturn(transactionResponseList);
 		
-		mockMvc.perform(get("/history").params(sortByAndOrderParams)
-				.accept(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(senderResponse))
-				.contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
-	public void getTransactionsBySender_orderByDateDesc_shouldReturnOk() throws Exception {
+	public void getTransactionsByUser_orderByDateDesc_shouldReturnOk() throws Exception {
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "date");
 		sortByAndOrderParams.add("order", "desc");
 		
-		when(transactionService.getTransactionsBySender_orderByDateDesc(any(User.class)))
+		when(transactionService.getTransactionsByUser_orderByDateDesc(any(Integer.class)))
 			.thenReturn(transactionResponseList);
 	
-		mockMvc.perform(get("/history").params(sortByAndOrderParams)
-				.accept(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(senderResponse))
-				.contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
-	public void getTransactionsBySender_orderByAmountAsc_shouldReturnOk() throws Exception {
+	public void getTransactionsByUser_orderByAmountAsc_shouldReturnOk() throws Exception {
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "amount");
 		sortByAndOrderParams.add("order", "asc");
 		
-		when(transactionService.getTransactionsBySender_orderByAmountAsc(any(User.class)))
+		when(transactionService.getTransactionsByUser_orderByAmountAsc(any(Integer.class)))
 			.thenReturn(transactionResponseList);
 		
-		mockMvc.perform(get("/history").params(sortByAndOrderParams)
-				.accept(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(senderResponse))
-				.contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
-	public void getTransactionsBySender_orderByAmountDesc_shouldReturnOk() throws Exception {
+	public void getTransactionsByUser_orderByAmountDesc_shouldReturnOk() throws Exception {
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "amount");
 		sortByAndOrderParams.add("order", "desc");
 		
-		when(transactionService.getTransactionsBySender_orderByAmountDesc(any(User.class)))
+		when(transactionService.getTransactionsByUser_orderByAmountDesc(any(Integer.class)))
 			.thenReturn(transactionResponseList);
 	
-		mockMvc.perform(get("/history").params(sortByAndOrderParams)
-				.accept(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(senderResponse))
-				.contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
-	public void getTransactionsBySender_orderByReceiverNameAsc_shouldReturnOk() throws Exception {
+	public void getTransactionsByUser_orderByBuddyNameAsc_shouldReturnOk() throws Exception {
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "receiver");
 		sortByAndOrderParams.add("order", "asc");
 		
-		when(transactionService.getTransactionsBySender_orderByReceiverNameAsc(any(User.class)))
+		when(transactionService.getTransactionsByUser_orderByBuddyNameAsc(any(Integer.class)))
 			.thenReturn(transactionResponseList);
 	
-		mockMvc.perform(get("/history").params(sortByAndOrderParams)
-				.accept(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(senderResponse))
-				.contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
-	public void getTransactionsBySender_orderByReceiverNameDesc_shouldReturnOk() throws Exception {
+	public void getTransactionsByUser_orderByBuddyNameDesc_shouldReturnOk() throws Exception {
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "receiver");
 		sortByAndOrderParams.add("order", "desc");
 		
-		when(transactionService.getTransactionsBySender_orderByReceiverNameDesc(any(User.class)))
+		when(transactionService.getTransactionsByUser_orderByBuddyNameDesc(any(Integer.class)))
 			.thenReturn(transactionResponseList);
 	
-		mockMvc.perform(get("/history").params(sortByAndOrderParams)
-				.accept(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(senderResponse))
-				.contentType(MediaType.APPLICATION_JSON))
+		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
 	
 	@Test
 	public void addTransaction_shouldReturnCreated() throws Exception {
-		when(transactionService.addTransaction(any(Transaction.class)))
+		when(transactionService.addTransaction(any(TransactionAddDto.class)))
 			.thenReturn(transactionResponse);
 		
 		mockMvc.perform(post("/transaction")
@@ -278,12 +265,9 @@ public class TransactionControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 		.andExpect(status().isCreated())
-		.andExpect(jsonPath("$.id").value(1))		
 		.andExpect(jsonPath("$.date").value(LocalDate.parse("2023-07-22", dateTimeFormatter).toString()))		
-		.andExpect(jsonPath("$.sender.firstname").value("John"))		
-		.andExpect(jsonPath("$.sender.lastname").value("Smith"))		
-		.andExpect(jsonPath("$.receiver.firstname").value("Jane"))		
-		.andExpect(jsonPath("$.receiver.lastname").value("Smith"))		
+		.andExpect(jsonPath("$.sender.id").value("1"))		
+		.andExpect(jsonPath("$.receiver.id").value("2"))		
 		.andExpect(jsonPath("$.amount").value(20))		
 		.andExpect(jsonPath("$.fee").value(0.1))		
 		.andExpect(jsonPath("$.description").value("First transaction"));
@@ -291,7 +275,7 @@ public class TransactionControllerTest {
 	
 	@Test
 	public void addTransaction_shouldThrowBadRequest() throws Exception {
-		when(transactionService.addTransaction(any(Transaction.class)))
+		when(transactionService.addTransaction(any(TransactionAddDto.class)))
 			.thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
 		
 		mockMvc.perform(post("/transaction"))

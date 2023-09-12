@@ -1,0 +1,23 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title background-color="primary"><h1>My transfers</h1></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="transactionHeader">
+            <div>Date
+                <button *ngIf="!isOrderedByDateAsc" (click)="onOrderHistoryByDate()"><mat-icon>arrow_drop_down</mat-icon></button>
+                <button *ngIf="isOrderedByDateAsc" (click)="onOrderHistoryByDate()"><mat-icon>arrow_drop_up</mat-icon></button>
+            </div>
+            <div>Buddy
+                <button *ngIf="!isOrderedByBuddyAsc" (click)="onOrderHistoryByBuddy()"><mat-icon>arrow_drop_down</mat-icon></button>
+                <button *ngIf="isOrderedByBuddyAsc" (click)="onOrderHistoryByBuddy()"><mat-icon>arrow_drop_up</mat-icon></button>
+            </div>
+            <div>Amount
+                <button *ngIf="!isOrderedByAmountAsc" (click)="onOrderHistoryByAmount()"><mat-icon>arrow_drop_down</mat-icon></button>
+                <button *ngIf="isOrderedByAmountAsc" (click)="onOrderHistoryByAmount()"><mat-icon>arrow_drop_up</mat-icon></button>
+            </div>
+            <div>Fee</div>
+        </div>
+        <app-transaction-list></app-transaction-list>
+    </mat-card-content>
+</mat-card>
