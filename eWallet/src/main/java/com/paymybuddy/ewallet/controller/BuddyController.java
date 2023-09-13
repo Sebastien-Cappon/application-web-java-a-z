@@ -42,6 +42,13 @@ public class BuddyController {
 	}
 	
 	@JsonView(UserView.BuddyView.class)
+	@GetMapping("/mybuddies/active/{id}")
+	@ResponseBody
+	public List<User> getActiveBuddiesByUser(@PathVariable("id") int userId) {
+		return iBuddyService.getActiveBuddiesByUser(userId);
+	}
+	
+	@JsonView(UserView.BuddyView.class)
 	@PostMapping("/buddy")
 	@ResponseBody
 	public ResponseEntity<User> addBuddy(@RequestBody BuddyAddDto buddyAddDto) {

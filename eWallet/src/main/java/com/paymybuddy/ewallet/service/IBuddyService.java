@@ -10,6 +10,7 @@ public interface IBuddyService {
 
 	public List<Buddy> getBuddies();
 	public List<User> getBuddiesByUser(int userId);
+	public List<User> getActiveBuddiesByUser(int userId);
 	
 	public User addBuddy(BuddyAddDto buddyAddDto);
 	public void deleteBuddy(int firstUserId, int secondUserId);

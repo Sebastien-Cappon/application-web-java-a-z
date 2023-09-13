@@ -80,6 +80,21 @@ public class BuddyControllerTest {
 	}
 	
 	@Test
+	public void getActiveBuddiesByUser_shouldReturnOk() throws Exception {
+		when(buddyService.getActiveBuddiesByUser(any(Integer.class)))
+			.thenReturn(userResponseList);
+		
+		mockMvc.perform(get("/mybuddies/active/{id}", "1")
+				.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.[0].id").value(1))
+			.andExpect(jsonPath("$.[0].firstname").value("John"))
+			.andExpect(jsonPath("$.[0].lastname").value("Smith"))
+			.andExpect(jsonPath("$.[0].email").value("john.smith@mrandmrs.smth"))
+			.andExpect(jsonPath("$.[0].active").value(true));
+	}
+	
+	@Test
 	public void addBuddy_shouldReturnCreated() throws Exception {
 		when(buddyService.addBuddy(any(BuddyAddDto.class)))
 			.thenReturn(userResponse);

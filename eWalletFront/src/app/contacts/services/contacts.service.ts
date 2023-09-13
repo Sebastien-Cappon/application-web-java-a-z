@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, catchError, map, of, tap } from "rxjs";
 import { User } from "src/app/core/models/user.model";
 import { environment } from "src/app/environments/environment";
-import { ContactsValue } from "../../models/contacts.model";
+import { ContactsValue } from "../models/contacts.model";
 
 @Injectable()
 export class ContactsService {

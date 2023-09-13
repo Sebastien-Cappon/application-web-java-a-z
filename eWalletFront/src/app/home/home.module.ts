@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeRoutingModule } from './home-routing.module';
-import { UserListComponent } from './components/user-list/user-list.component';
 import { SharedModule } from '../shared/shared.module';
-import { UserListItemComponent } from './components/user-list-item/user-list-item.component';
+import { HomeComponent } from './components/home/home.component';
 
 
 @NgModule({
   declarations: [
-    UserListComponent,
-    UserListItemComponent
+    HomeComponent
   ],
   imports: [
     CommonModule,
@@ -17,7 +15,7 @@ import { UserListItemComponent } from './components/user-list-item/user-list-ite
     SharedModule
   ],
   exports: [
-    UserListComponent
+    HomeComponent
   ]
 })
 export class HomeModule { }

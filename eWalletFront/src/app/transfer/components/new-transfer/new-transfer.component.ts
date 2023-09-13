@@ -1,22 +1,20 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription, map, startWith, tap } from 'rxjs';
-import { ContactsService } from 'src/app/contacts/components/services/contacts.service';
+import { Observable, combineLatest, map, startWith, tap } from 'rxjs';
 import { User } from 'src/app/core/models/user.model';
 import { TransferService } from '../../services/transfer.service';
 import { TransactionsService } from 'src/app/shared/services/transactions.service';
-import { Transaction } from 'src/app/core/models/transaction.model';
 
 @Component({
   selector: 'app-new-transfer',
   templateUrl: './new-transfer.component.html',
-  styleUrls: ['./new-transfer.component.scss']
+  styleUrls: ['./new-transfer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewTransferComponent {
   
   constructor(
     private formBuilder: FormBuilder,
-    private contactsService: ContactsService,
     private transferService: TransferService,
     private transactionsService: TransactionsService
   ) { }
@@ -29,10 +27,7 @@ export class NewTransferComponent {
   isLoading = false;
 
   private currentUserId = Number(sessionStorage.getItem('currentUserId'));
-  buddies$!: Observable<User[]>;
-  
-  buddies!: User[];
-  filteredBuddies$!: Observable<User[]>;
+  activeBuddies$!: Observable<User[]>
 
   ngOnInit(): void {
     this.initObservables();
@@ -42,8 +37,7 @@ export class NewTransferComponent {
   }
 
   initObservables() {
-    this.contactsService.getMyBuddies(this.currentUserId);
-    this.buddies$ = this.contactsService.buddies$;
+    this.transferService.getMyActiveBuddies(this.currentUserId);
   }
 
   initTransferFormControls() {
@@ -62,17 +56,23 @@ export class NewTransferComponent {
   }
 
   initTransferFormObservables() {
-    this.buddies$.subscribe(buddies => this.buddies = buddies);
-    this.filteredBuddies$ = this.transferBeneficiaryCtrl.valueChanges.pipe(
-      startWith(''),
-      map(buddy => (buddy ? this._filterBuddies(buddy) : this.buddies.slice())),
+    const searchBeneficiary$ = this.transferBeneficiaryCtrl.valueChanges.pipe(
+      startWith(this.transferBeneficiaryCtrl.value),
+      map(value => {
+        const test = typeof value === 'string' ? value.toLowerCase() : value.firstname.concat(" ").concat(value.lastname).toLowerCase();
+        return test;
+      }),
+      tap(value => console.log(value))
     );
-  }
 
-  private _filterBuddies(value: string): User[] {
-    const filterValue = value.toLowerCase();
-    this.buddies = this.buddies.filter(buddy => buddy.active);
-    return this.buddies.filter(buddy => buddy.firstname.toLowerCase().concat(buddy.lastname.toLowerCase()).includes(filterValue));
+    this.activeBuddies$ = combineLatest([
+      searchBeneficiary$,
+      this.transferService.activeBuddies$
+    ]).pipe(
+      map(([searchBeneficiary, activeBuddies]) => activeBuddies.filter(activeBuddy => activeBuddy.firstname.concat(" ").concat(activeBuddy.lastname)
+        .toLowerCase()
+        .includes(searchBeneficiary)))
+    );
   }
 
   displayFn(selectedBuddy: User) {

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Observable, switchMap } from 'rxjs';
-import { ContactsService } from '../services/contacts.service';
+import { ContactsService } from '../../services/contacts.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/core/models/user.model';
 import { TransactionsService } from 'src/app/shared/services/transactions.service';

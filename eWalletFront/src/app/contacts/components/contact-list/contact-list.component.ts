@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ContactsService } from '../services/contacts.service';
+import { ContactsService } from '../../services/contacts.service';
 import { Observable, tap } from 'rxjs';
 import { User } from 'src/app/core/models/user.model';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';

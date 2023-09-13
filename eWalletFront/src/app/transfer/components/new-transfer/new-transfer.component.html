@@ -1,4 +1,4 @@
-<mat-card [formGroup]="transferForm">
+<mat-card *ngIf="activeBuddies$| async as activeBuddies" [formGroup]="transferForm">
     <mat-card-header>
         <mat-card-title background-color="primary"><h1>New transfer</h1></mat-card-title>
     </mat-card-header>
@@ -9,8 +9,9 @@
                     <mat-label>Beneficiary</mat-label>
                     <input matInput type="text" [formControl]="transferBeneficiaryCtrl" [matAutocomplete]="autoBuddies">
                     <mat-autocomplete #autoBuddies="matAutocomplete" [displayWith]="displayFn">
-                        <mat-option *ngFor="let buddy of filteredBuddies$ | async" [value]="buddy">
-                            {{ buddy.firstname }} {{ buddy.lastname }}
+                        <!--<mat-option *ngFor="let activeBuddy of activeBuddies" [value]="activeBuddy.firstname+activeBuddy.lastname">-->
+                        <mat-option *ngFor="let activeBuddy of activeBuddies" [value]="activeBuddy">
+                            {{ activeBuddy.firstname }} {{ activeBuddy.lastname }}
                         </mat-option>
                     </mat-autocomplete>
                     <mat-error>Please select a buddy to make the transfer to.</mat-error>
