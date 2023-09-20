@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.paymybuddy.ewallet.dto.EwalletTransactionAddDto;
 import com.paymybuddy.ewallet.dto.TransactionAddDto;
 import com.paymybuddy.ewallet.model.Transaction;
 import com.paymybuddy.ewallet.service.ITransactionService;
@@ -40,6 +41,9 @@ public class TransactionController {
 			case "amount" :
 				if(order.contains("asc")) { return iTransactionService.getTransactions_orderByAmountAsc(); }
 				return iTransactionService.getTransactions_orderByAmountDesc();
+			case "sender" :
+				if(order.contains("asc")) { return iTransactionService.getTransactions_orderBySenderNameAsc(); }
+				return iTransactionService.getTransactions_orderBySenderNameDesc();
 			case "receiver" :
 				if(order.contains("asc")) { return iTransactionService.getTransactions_orderByReceiverNameAsc(); }
 				return iTransactionService.getTransactions_orderByReceiverNameDesc();
@@ -72,6 +76,12 @@ public class TransactionController {
 		}
 	}
 	
+	@GetMapping("/history/ewallet/{id}")
+	@ResponseBody
+	public List<Transaction> getTransactionsFromEwallet(@PathVariable("id") int userId) {
+		return iTransactionService.getTransactionsFromEwallet(userId);
+	}
+	
 	@GetMapping("/history/between/{userId}-{buddyId}")
 	@ResponseBody
 	public List<Transaction> getTransactionsBetweenUsers(@PathVariable("userId") int firstUserId, @PathVariable("buddyId") int secondUserId, @RequestParam(defaultValue="none") String sortBy, @RequestParam(defaultValue="asc") String order) {
@@ -84,6 +94,18 @@ public class TransactionController {
 				return iTransactionService.getTransactionsBetweenUsers_orderByAmountDesc(firstUserId, secondUserId);
 			default :
 				return iTransactionService.getTransactionsBetweenUsers(firstUserId, secondUserId);
+		}
+	}
+	
+	@JsonView(TransactionView.AddTransactionView.class)
+	@PostMapping("/ewallet")
+	public ResponseEntity<Transaction> addEwalletTransaction(@RequestBody EwalletTransactionAddDto ewalletTransactionAddDto) throws Exception {
+		Transaction createdTransaction = iTransactionService.addEwalletTransaction(ewalletTransactionAddDto); 
+		
+		if(createdTransaction == null) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<Transaction>(createdTransaction, HttpStatus.CREATED);
 		}
 	}
 	

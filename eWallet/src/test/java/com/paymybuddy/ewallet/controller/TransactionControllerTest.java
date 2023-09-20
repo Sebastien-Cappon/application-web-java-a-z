@@ -26,6 +26,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paymybuddy.ewallet.dto.EwalletTransactionAddDto;
 import com.paymybuddy.ewallet.dto.TransactionAddDto;
 import com.paymybuddy.ewallet.model.Transaction;
 import com.paymybuddy.ewallet.model.User;
@@ -253,6 +254,33 @@ public class TransactionControllerTest {
 		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void addEwalletTransaction_shouldReturnCreated() throws Exception {
+		when(transactionService.addEwalletTransaction(any(EwalletTransactionAddDto.class)))
+			.thenReturn(transactionResponse);
+		
+		mockMvc.perform(post("/ewallet")
+				.content(objectMapper.writeValueAsString(transactionResponse))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+		.andExpect(status().isCreated())
+		.andExpect(jsonPath("$.date").value(LocalDate.parse("2023-07-22", dateTimeFormatter).toString()))		
+		.andExpect(jsonPath("$.sender.id").value("1"))		
+		.andExpect(jsonPath("$.receiver.id").value("2"))		
+		.andExpect(jsonPath("$.amount").value(20))		
+		.andExpect(jsonPath("$.fee").value(0.1))		
+		.andExpect(jsonPath("$.description").value("First transaction"));
+	}
+	
+	@Test
+	public void addEwalletTransaction_shouldThrowBadRequest() throws Exception {
+		when(transactionService.addEwalletTransaction(any(EwalletTransactionAddDto.class)))
+			.thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+		
+		mockMvc.perform(post("/ewallet"))
+			.andExpect(status().isBadRequest());
 	}
 	
 	@Test

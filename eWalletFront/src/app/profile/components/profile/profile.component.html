@@ -1,11 +1,12 @@
 <div class="container">
-    <mat-card *ngIf="currentUser$ | async as currentUser" [formGroup]="profileForm">
-        <mat-card-header>
-            <mat-card-title background-color="primary"><h1>My Profile</h1></mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <p id="welcomeMessage"><b>{{ currentUser.lastname | titlecase }} {{ currentUser.firstname | titlecase }}</b>, welcome to your profile. You can change your personal details below.<br>
-            Please note that changing your password is a <u>sensitive operation.</u> Please be careful. </p>
+    <div class="matCardWrapper">
+        <mat-card *ngIf="currentUser$ | async as currentUser" [formGroup]="profileForm">
+            <mat-card-header>
+                <mat-card-title background-color="primary"><h1>My Profile</h1></mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p id="welcomeMessage"><b>{{ currentUser.lastname | titlecase }} {{ currentUser.firstname | titlecase }}</b>, welcome to your profile. You can change your personal details below.<br>
+                Please note that changing your password is a <u>sensitive operation.</u> Please be careful. </p>
                 <h2>Personnal informations</h2>
                 <mat-grid-list cols="2" rowHeight="76px" *ngIf="!isEditing">
                     <mat-grid-tile>
@@ -60,7 +61,7 @@
                     </mat-grid-tile>
                 </mat-grid-list>
                 <mat-grid-list cols="2" rowHeight="76px" *ngIf="isEditing" [formGroup]="profilePasswordForm">
-                   <mat-grid-tile>
+                <mat-grid-tile>
                         <mat-form-field color="accent" style="margin-right: 8px;">
                             <mat-label>Password</mat-label>
                             <input matInput type="password" [formControl]="profilePasswordCtrl">
@@ -70,24 +71,25 @@
                         <mat-form-field color="accent" style="margin-left: 8px;" *ngIf="showProfileConfirmPassword$ | async">
                             <mat-label>Password confirmation</mat-label>
                             <input matInput type="password" [formControl]="profileConfirmPasswordCtrl">
-                            <mat-error>You must confirm your new password.</mat-error>
+                            <mat-error>Please confirm new password.</mat-error>
                         </mat-form-field>
                     </mat-grid-tile>
                 </mat-grid-list>
-                <mat-error class="groupControlError" *ngIf="showProfilePasswordError$ | async">Both password don't match.</mat-error>
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-flat-button color="warn" *ngIf="!isDeleting && !isConfirmingDeletion" (click)="onDelete()" [disabled]="isEditing">DELETE ACCOUNT</button>
-            <button mat-flat-button color="warn" *ngIf="isDeleting" (click)="onConfirmDelete()" [disabled]="isEditing">Confirm deletion ?</button>
-            <button mat-flat-button color="warn" *ngIf="isConfirmingDeletion" (click)="onCompleteDelete()" [disabled]="isLoading || isEditing">
-                <span *ngIf="!isLoading" style="color: #FFF;">Complete deletion !</span>
-                <mat-spinner *ngIf="isLoading" color="warn" mode="indeterminate"></mat-spinner>
-            </button>
-            <button mat-stroked-button color="accent" *ngIf="!isEditing" (click)="onEdit()">Start editing</button>
-            <button mat-flat-button color="primary" *ngIf="isEditing" (click)="onCompleteEdit()" [disabled]="isLoading || profileForm.invalid || profileEmailForm.invalid || profilePasswordForm.invalid">
-                <span *ngIf="!isLoading" style="color: #FFF;">Confirm edition</span>
-                <mat-spinner *ngIf="isLoading" color="accent" mode="indeterminate"></mat-spinner>
-            </button>
-        </mat-card-actions>
-    </mat-card>
+                <mat-error class="groupControlError" *ngIf="showProfilePasswordError$ | async">Both passwords don't match.</mat-error>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-flat-button color="warn" *ngIf="!isDeleting && !isConfirmingDeletion" (click)="onDelete()" [disabled]="isEditing">DELETE ACCOUNT</button>
+                <button mat-flat-button color="warn" *ngIf="isDeleting" (click)="onConfirmDelete()" [disabled]="isEditing">Confirm deletion ?</button>
+                <button mat-flat-button color="warn" *ngIf="isConfirmingDeletion" (click)="onCompleteDelete()" [disabled]="isLoading || isEditing">
+                    <span *ngIf="!isLoading" style="color: #FFF;">Complete deletion !</span>
+                    <mat-spinner *ngIf="isLoading" color="warn" mode="indeterminate"></mat-spinner>
+                </button>
+                <button mat-stroked-button color="accent" *ngIf="!isEditing" (click)="onEdit()">Start editing</button>
+                <button mat-flat-button color="primary" *ngIf="isEditing" (click)="onCompleteEdit()" [disabled]="isLoading || profileForm.invalid || profileEmailForm.invalid || profilePasswordForm.invalid">
+                    <span *ngIf="!isLoading" style="color: #FFF;">Confirm edition</span>
+                    <mat-spinner *ngIf="isLoading" color="accent" mode="indeterminate"></mat-spinner>
+                </button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
 </div>

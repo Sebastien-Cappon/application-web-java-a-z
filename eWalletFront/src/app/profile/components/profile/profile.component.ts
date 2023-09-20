@@ -155,9 +155,9 @@ export class ProfileComponent {
 
   getProfileFormControlErrorText(ctrl: AbstractControl): string {
     if(ctrl.hasError('required')) {
-      return 'You must confirm your previous input.';
+      return 'Please confirm previous input.';
     } else if (ctrl.hasError('email') || ctrl.hasError('emailPatternValidator')){
-      return 'This input field require a valid email address.'
+      return 'Valid e-mail address required.'
     } else {
       return 'An error has occured.';
     }
@@ -203,9 +203,9 @@ export class ProfileComponent {
         if (updated) {
           this.profileForm.reset();
           this.isEditing = false;
-          this.initObservables();
+          this.ngOnInit();
         }
       })
-    ).subscribe()
+    ).subscribe();
   }
 }

@@ -4,6 +4,7 @@ import { ContactsService } from '../../services/contacts.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/core/models/user.model';
 import { TransactionsService } from 'src/app/shared/services/transactions.service';
+import { Sorter } from 'src/app/shared/models/sorter.model';
 
 @Component({
   selector: 'app-single-contact',
@@ -21,11 +22,8 @@ export class SingleContactComponent {
   ) { }
 
   private currentUserId = Number(sessionStorage.getItem('currentUserId'));
+  transfersSorter$!: Observable<Sorter>;
   buddy$!: Observable<User>;
-
-  isOrderedByDateAsc = false;
-  isOrderedByBuddyAsc = false;
-  isOrderedByAmountAsc = false;
 
   ngOnInit(): void {
     this.initObservables();
@@ -35,38 +33,33 @@ export class SingleContactComponent {
     this.buddy$ = this.activatedRoute.params.pipe(
       switchMap(params => this.contactsService.getBuddyById(this.currentUserId, +params['id']))
     );
+    this.transfersSorter$ = this.transactionsService.transfersSorter$;
 
     this.activatedRoute.params.subscribe(params => {
       this.transactionsService.getHistoryBetween(this.currentUserId, +params['id']);
     });
   }
   
-  onOrderHistoryBetweenByDate() {
-    if(!this.isOrderedByDateAsc){
-      this.activatedRoute.params.subscribe(params => {
-        this.transactionsService.getHistoryBetween_orderByDateAsc(this.currentUserId, +params['id']);
-      });
-      this.isOrderedByDateAsc = true;
-    } else {
+  onOrderHistoryBetweenByDateAsc() {
+    this.activatedRoute.params.subscribe(params => {
+      this.transactionsService.getHistoryBetween_orderByDateAsc(this.currentUserId, +params['id']);
+    });
+  }
+  onOrderHistoryBetweenByDateDesc() {
       this.activatedRoute.params.subscribe(params => {
         this.transactionsService.getHistoryBetween_orderByDateDesc(this.currentUserId, +params['id']);
       });
-      this.isOrderedByDateAsc = false;
-    }
   }
 
-  onOrderHistoryBetweenByAmount() {
-    if(!this.isOrderedByAmountAsc){
-      this.activatedRoute.params.subscribe(params => {
-        this.transactionsService.getHistoryBetween_orderByAmountAsc(this.currentUserId, +params['id']);
-      });
-      this.isOrderedByAmountAsc = true;
-    } else {
-      this.activatedRoute.params.subscribe(params => {
-        this.transactionsService.getHistoryBetween_orderByAmountDesc(this.currentUserId, +params['id']);
-      });
-      this.isOrderedByAmountAsc = false;
-    }
+  onOrderHistoryBetweenByAmountAsc() {
+    this.activatedRoute.params.subscribe(params => {
+      this.transactionsService.getHistoryBetween_orderByAmountAsc(this.currentUserId, +params['id']);
+    });
+  }
+  onOrderHistoryBetweenByAmountDesc() {
+    this.activatedRoute.params.subscribe(params => {
+      this.transactionsService.getHistoryBetween_orderByAmountDesc(this.currentUserId, +params['id']);
+    });
   }
 
   onBack() {

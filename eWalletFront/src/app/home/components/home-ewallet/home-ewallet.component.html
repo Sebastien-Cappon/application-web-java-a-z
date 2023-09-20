@@ -1,0 +1,23 @@
+<mat-card *ngIf="currentUser$ | async as currentUser" [formGroup]="homeEwalletForm">
+    <mat-card-header>
+        <mat-card-title background-color="primary"><h1>E-Wallet : <span>{{ currentUser.amount | currency:'EUR' }}</span></h1></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-form-field color="accent">
+            <mat-label>Credit your e-wallet</mat-label>
+            <input matInput currencyMask [formControl]="homeCreditAmountCtrl" [options]="{ allowNegative: false, prefix: '', suffix: ' €', decimal: ',', thousands: ' ' }">
+            <mat-icon matSuffix [ngStyle]="{ 'color':homeCreditAmountCtrl.invalid ? '#989898' : '#03a9f4' }">credit_card</mat-icon>
+            <mat-error>Credits under 3€ are not allowed.</mat-error>
+        </mat-form-field>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-stroked-button color="warn" (click)="onDebitEwallet()" [disabled]="isDebitLoading">
+            <span *ngIf="!isDebitLoading">Debit all</span>
+            <mat-spinner *ngIf="isDebitLoading" color="warn" mode="indeterminate"></mat-spinner>
+        </button>
+        <button mat-stroked-button color="accent" (click)="onCreditEwallet()" [disabled]="homeCreditAmountCtrl.invalid || isCreditLoading">
+            <span *ngIf="!isCreditLoading">Credit amount</span>
+            <mat-spinner *ngIf="isCreditLoading" color="accent" mode="indeterminate"></mat-spinner>
+        </button>
+    </mat-card-actions>
+</mat-card>

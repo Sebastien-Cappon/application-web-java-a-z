@@ -18,6 +18,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 	List<Transaction> findByOrderByDateDesc();
 	List<Transaction> findByOrderByAmountAsc();
 	List<Transaction> findByOrderByAmountDesc();
+	@Query(value = MySqlQueries.allTransaction_orderBySenderNameAsc, nativeQuery = true)
+	List<Transaction> getTransactions_orderBySenderNameAsc();
+	@Query(value = MySqlQueries.allTransaction_orderBySenderNameDesc, nativeQuery = true)
+	List<Transaction> getTransactions_orderBySenderNameDesc();
 	@Query(value = MySqlQueries.allTransaction_orderByReceiverNameAsc, nativeQuery = true)
 	List<Transaction> getTransactions_orderByReceiverNameAsc();
 	@Query(value = MySqlQueries.allTransaction_orderByReceiverNameDesc, nativeQuery = true)
@@ -28,6 +32,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
 	List<Transaction> findBySenderOrReceiverOrderByDateDesc(User firstUser, User secondUser);
 	List<Transaction> findBySenderOrReceiverOrderByAmountAsc(User firstUser, User secondUser);
 	List<Transaction> findBySenderOrReceiverOrderByAmountDesc(User firstUser, User secondUser);
+	
+	List<Transaction> findBySenderAndReceiverOrderByIdDesc(User sender, User receiver);
 	
 	@Query(value = MySqlQueries.allTransactionBySenderAndReceiver, nativeQuery = true)
 	List<Transaction> getTransactionsBetweenUsers(int firstUserId, int secondUserId);

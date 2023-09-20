@@ -1,0 +1,31 @@
+@media (max-width : 800px) {
+    mat-card-content {
+        margin-bottom: 16px;
+        text-align: center;
+    }
+}
+
+@media (min-width : 800px) {
+    mat-card-content {
+        margin-bottom: 20px;
+        text-align: center;
+
+        div {
+            display: flex;
+            height: 56px;
+            align-items: center;
+        }
+    }
+}
+
+mat-card {
+    margin: 16px;
+
+    mat-card-content {
+        text-align: center;
+    }
+
+    mat-card-actions button {
+        min-width: 150px
+    }
+}

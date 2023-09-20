@@ -11,11 +11,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.paymybuddy.ewallet.dto.EwalletTransactionAddDto;
 import com.paymybuddy.ewallet.dto.TransactionAddDto;
 import com.paymybuddy.ewallet.model.Transaction;
 import com.paymybuddy.ewallet.model.User;
 import com.paymybuddy.ewallet.repository.TransactionRepository;
 import com.paymybuddy.ewallet.repository.UserRepository;
+import com.paymybuddy.ewallet.utils.TransactionUtil;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -28,35 +30,46 @@ public class TransactionService implements ITransactionService {
 	private UserRepository userRepository;
 	@Autowired
 	private IUserService iUserService;
+	@Autowired
+	private TransactionUtil transactionUtil;
 
 	public List<Transaction> getTransactions() {
-		return transactionRepository.findAll();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findAll());
 	}
 
 	public List<Transaction> getTransactions_orderByDateAsc() {
-		return transactionRepository.findByOrderByDateAsc();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findByOrderByDateAsc());
 	}
 
 	public List<Transaction> getTransactions_orderByDateDesc() {
-		return transactionRepository.findByOrderByDateDesc();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findByOrderByDateDesc());
 	}
 
 	public List<Transaction> getTransactions_orderByAmountAsc() {
-		return transactionRepository.findByOrderByAmountAsc();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findByOrderByAmountAsc());
 	}
 
 	public List<Transaction> getTransactions_orderByAmountDesc() {
-		return transactionRepository.findByOrderByAmountDesc();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findByOrderByAmountDesc());
+	}
+	
+	public List<Transaction> getTransactions_orderBySenderNameAsc() {
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.getTransactions_orderBySenderNameAsc());
+	}
+
+	public List<Transaction> getTransactions_orderBySenderNameDesc() {
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.getTransactions_orderBySenderNameDesc());
 	}
 
 	public List<Transaction> getTransactions_orderByReceiverNameAsc() {
-		return transactionRepository.getTransactions_orderByReceiverNameAsc();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.getTransactions_orderByReceiverNameAsc());
 	}
 
 	public List<Transaction> getTransactions_orderByReceiverNameDesc() {
-		return transactionRepository.getTransactions_orderByReceiverNameDesc();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.getTransactions_orderByReceiverNameDesc());
 	}
 
+	// TODO: USELESS ?
 	public Transaction getTransactionById(int id) {
 		if(transactionRepository.findById(id).isPresent()) {
 			return transactionRepository.findById(id).get();
@@ -68,7 +81,7 @@ public class TransactionService implements ITransactionService {
 	public List<Transaction> getTransactionsByUser(int userId) {
 		if(userRepository.findById(userId).isPresent()) {
 			User user = userRepository.findById(userId).get();
-			return transactionRepository.findBySenderOrReceiverOrderByIdDesc(user, user);
+			return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByIdDesc(user, user));
 		}
 		
 		return null;
@@ -77,7 +90,7 @@ public class TransactionService implements ITransactionService {
 	public List<Transaction> getTransactionsByUser_orderByDateAsc(int userId) {
 		if(userRepository.findById(userId).isPresent()) {
 			User user = userRepository.findById(userId).get();
-			return transactionRepository.findBySenderOrReceiverOrderByDateAsc(user, user);
+			return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByDateAsc(user, user));
 		}
 		
 		return null;
@@ -86,7 +99,7 @@ public class TransactionService implements ITransactionService {
 	public List<Transaction> getTransactionsByUser_orderByDateDesc(int userId) {
 		if(userRepository.findById(userId).isPresent()) {
 			User user = userRepository.findById(userId).get();
-			return transactionRepository.findBySenderOrReceiverOrderByDateDesc(user, user);
+			return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByDateDesc(user, user));
 		}
 		
 		return null;
@@ -95,7 +108,7 @@ public class TransactionService implements ITransactionService {
 	public List<Transaction> getTransactionsByUser_orderByAmountAsc(int userId) {
 		if(userRepository.findById(userId).isPresent()) {
 			User user = userRepository.findById(userId).get();
-			return transactionRepository.findBySenderOrReceiverOrderByAmountAsc(user, user);
+			return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByAmountAsc(user, user));
 		}
 		
 		return null;
@@ -104,55 +117,43 @@ public class TransactionService implements ITransactionService {
 	public List<Transaction> getTransactionsByUser_orderByAmountDesc(int userId) {
 		if(userRepository.findById(userId).isPresent()) {
 			User user = userRepository.findById(userId).get();
-			return transactionRepository.findBySenderOrReceiverOrderByAmountDesc(user, user);
+			return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByAmountDesc(user, user));
 		}
 		
 		return null;
 	}
 	
-	public TreeMap<String, Integer> getBuddiesNameByTransactionsByUser_orderByBuddyNameAsc(int userId) {
-		TreeMap<String, Integer> buddies = new TreeMap<>();
-		
-		if(userRepository.findById(userId).isPresent()) {
-			User user = userRepository.findById(userId).get();
-			List<Transaction> transactionsByUser = transactionRepository.findBySenderOrReceiverOrderByIdDesc(user, user);
-		
-			for (Transaction transaction : transactionsByUser) {
-				if(transaction.getSender() == user) {
-					String buddyName = transaction.getReceiver().getFirstname() + transaction.getReceiver().getLastname();
-					buddies.put(buddyName, transaction.getReceiver().getId());
-				} else {
-					String buddyName = transaction.getSender().getFirstname() + transaction.getSender().getLastname();
-					buddies.put(buddyName, transaction.getSender().getId());
-				}
-			}
-		}
-		
-		return buddies;
-	}
-	
 	public List<Transaction> getTransactionsByUser_orderByBuddyNameAsc(int userId) {
-		List<Transaction> transactionsByUserOrderByBuddyName = new ArrayList<>();
-		TreeMap<String, Integer> buddies = this.getBuddiesNameByTransactionsByUser_orderByBuddyNameAsc(userId); 
+		List<Transaction> transactionsByUserOrderByBuddyNameDesc = new ArrayList<>();
+		TreeMap<String, Integer> buddies = transactionUtil.getBuddiesNameByTransactionByUser_orderByBuddyNameAsc(userId); 
 		
 		Set<String> keys = buddies.keySet();
 		for(String key : keys) { 
-			transactionsByUserOrderByBuddyName.addAll(transactionRepository.getTransactionsBetweenUsers_orderByDateDesc(userId, buddies.get(key)));
+			transactionsByUserOrderByBuddyNameDesc.addAll(transactionRepository.getTransactionsBetweenUsers_orderByDateDesc(userId, buddies.get(key)));
 		}
 		
-		return transactionsByUserOrderByBuddyName;
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionsByUserOrderByBuddyNameDesc);
 	}
 
 	public List<Transaction> getTransactionsByUser_orderByBuddyNameDesc(int userId) {
-		List<Transaction> transactionsByUserOrderByBuddyName = new ArrayList<>();
-		TreeMap<String, Integer> buddies = this.getBuddiesNameByTransactionsByUser_orderByBuddyNameAsc(userId);
+		List<Transaction> transactionsByUserOrderByBuddyNameAsc = new ArrayList<>();
+		TreeMap<String, Integer> buddies = transactionUtil.getBuddiesNameByTransactionByUser_orderByBuddyNameAsc(userId);
 		
 		Set<String> keys = buddies.descendingKeySet();
 		for(String key : keys) { 
-			transactionsByUserOrderByBuddyName.addAll(transactionRepository.getTransactionsBetweenUsers_orderByDateDesc(userId, buddies.get(key)));
+			transactionsByUserOrderByBuddyNameAsc.addAll(transactionRepository.getTransactionsBetweenUsers_orderByDateDesc(userId, buddies.get(key)));
 		}
 		
-		return transactionsByUserOrderByBuddyName;
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionsByUserOrderByBuddyNameAsc);
+	}
+	
+	public List<Transaction> getTransactionsFromEwallet(int userId) {
+		if(userRepository.findById(userId).isPresent()) {
+			User user = userRepository.findById(userId).get();
+			return transactionRepository.findBySenderAndReceiverOrderByIdDesc(user, user);
+		}
+		
+		return null;
 	}
 	
 	public List<Transaction> getTransactionsBetweenUsers(int firstUserId, int secondUserId) {
@@ -173,6 +174,35 @@ public class TransactionService implements ITransactionService {
 	
 	public List<Transaction> getTransactionsBetweenUsers_orderByAmountDesc(int firstUserId, int secondUserId) {
 		return transactionRepository.getTransactionsBetweenUsers_orderByAmountDesc(firstUserId, secondUserId);
+	}
+	
+	public Transaction addEwalletTransaction(EwalletTransactionAddDto ewalletTransactionAddDto) throws Exception{
+		if (userRepository.findById(ewalletTransactionAddDto.getUserId()).isPresent()) {
+			double transactionAmount = ewalletTransactionAddDto.getAmount();
+			String transactionComment = new String();
+			
+			if(transactionAmount >= 0) {
+				transactionComment = "You have credit your account.";
+			} else {
+				transactionComment = "You have withdraw your money.";
+			}
+			
+			User user = userRepository.findById(ewalletTransactionAddDto.getUserId()).get();
+			user.setAmount(user.getAmount() + transactionAmount);
+			iUserService.updateAmount(user.getId(), user.getAmount());
+			
+			Transaction newTransaction = new Transaction();
+			newTransaction.setDate(LocalDate.now());
+			newTransaction.setSender(user);
+			newTransaction.setReceiver(user);
+			newTransaction.setAmount(transactionAmount);
+			newTransaction.setFee(0);
+			newTransaction.setDescription(transactionComment);
+			
+			return transactionRepository.save(newTransaction);
+		}
+		
+		return null;
 	}
 	
 	public Transaction addTransaction(TransactionAddDto transactionAddDto) throws Exception{

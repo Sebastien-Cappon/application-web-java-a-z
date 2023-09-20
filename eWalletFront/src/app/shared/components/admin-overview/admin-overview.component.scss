@@ -1,0 +1,109 @@
+#adminWealthMessage {
+    margin-top: 0;
+    text-align: center;
+}
+
+.transactionHeader {
+    div {
+        font-size: 14px;
+    }
+
+    div:first-child {
+        width: 19%;
+        text-align: left;
+    }
+
+    div:nth-child(2) {
+        width: 24%;
+        text-align: left;
+    }
+
+    div:nth-child(3) {
+        width: 24%;
+        text-align: left;
+    }
+
+    div:nth-child(4) {
+        width: 21%;
+        text-align: right;
+    }
+
+    div:last-child {
+        width: 12%;
+        text-align: center;
+    }
+}
+
+mat-accordion {
+    font-size: 12px;
+    border-radius: 0;
+
+    mat-expansion-panel {
+        border-radius: 0 !important;
+        box-shadow: none;
+
+        mat-expansion-panel-header {
+            padding: 0 16px;
+            margin-left: -4px;
+            margin-right: -8px;
+            
+            mat-panel-title {
+                flex-grow: 0.5;
+                margin-right: 0;
+            }
+
+            mat-panel-description {
+                margin-right: 0;
+
+                div {
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                }
+
+                div:first-child {
+                    width: 29%;
+                    font-variant: small-caps;
+                }
+
+                div:nth-child(2) {
+                    width: 29%;
+                    font-variant: small-caps;
+                }
+
+                div:nth-child(3) {
+                    width: 26%;
+                    text-align: right;
+                    font-variant: small-caps;
+                }
+
+                div:last-child {
+                    width: 16%;
+                    color: rgba(0, 0, 0, .5);
+                    font-size: 10px;
+                    font-style: italic;
+                    text-align: right;
+                }
+            }
+        }
+
+        .historyDescription {
+            color: rgba(0, 0, 0, .5)
+        }
+        
+        .noCommentDescription {
+            font-variant: small-caps;
+        }
+    }
+
+    mat-expansion-panel:nth-child(2n) {
+        background-color: #f8f8f8;
+    }
+    mat-expansion-panel:nth-child(2n+1) {
+        background-color: #e5f6fe;
+    }
+}
+
+mat-card-actions {
+    margin-top: 16px;
+}

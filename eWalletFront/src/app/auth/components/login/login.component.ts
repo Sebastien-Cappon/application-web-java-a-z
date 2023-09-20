@@ -5,6 +5,8 @@ import { Observable, tap } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { User } from 'src/app/core/models/user.model';
 import { emailPatternValidator } from 'src/app/shared/validators/emailPattern.validator';
+import { MatDialog } from '@angular/material/dialog';
+import { NewAccountComponent } from '../new-account/new-account.component';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +18,8 @@ export class LoginComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) { }
 
   loginForm!: FormGroup;
@@ -25,6 +28,7 @@ export class LoginComponent {
   isLogged = this.authService.isLogged();
   isWrongCredentials = false;
   isLoading = false;
+  isAccountCreated!: boolean;
 
   private currentUserId = Number(sessionStorage.getItem('currentUserId'));
   currentUser$!: Observable<User>;
@@ -52,6 +56,21 @@ export class LoginComponent {
     } else {
       return 'This input filed require an valid email address.';
     }
+  }
+
+  openNewAccountDialog() {
+    const newAccountDialog = this.dialog.open(NewAccountComponent, {
+      width: '800px',
+      maxWidth: 'calc(100vw - 32px)',
+      maxHeight: 'calc(100vh - 32px)',
+      data: {isAccountCreated: this.isAccountCreated}
+    });
+
+    newAccountDialog.afterClosed().subscribe(value => {
+      if(value) {
+        this.router.navigateByUrl('/home');
+      }
+    });
   }
 
   onLogin(): void {

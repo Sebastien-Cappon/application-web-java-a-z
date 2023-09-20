@@ -63,7 +63,7 @@ export class ContactListComponent {
     this.isLoading = true;
     this.contactsService.unBuddy(this.currentUserId, buddyId).subscribe(() => {
       this.isLoading = false;
-      this.initObservables();
+      this.ngOnInit();
     });
   }
 
@@ -72,7 +72,7 @@ export class ContactListComponent {
       tap(buddied => {
         if (buddied) {
           this.newBuddyEmailCtrl.reset();
-          this.initObservables();
+          this.ngOnInit();
         }
       })
     ).subscribe();

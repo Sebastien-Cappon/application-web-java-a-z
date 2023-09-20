@@ -1,0 +1,17 @@
+<mat-card *ngIf="buddies$ | async as buddies">
+    <mat-card-header>
+        <mat-card-title background-color="primary"><h2>Buddies</h2></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-list>
+            <mat-list-item *ngFor="let buddy of buddies | slice:0:4">
+                <p *ngIf="buddy.active">{{ buddy.firstname }} {{ buddy.lastname }}</p>
+                <p class="inactiveBuddy" *ngIf="!buddy.active"><span style="color: #f44336;">*</span> {{ buddy.firstname }} {{ buddy.lastname }} <i>(inactive)</i></p>
+            </mat-list-item>
+        </mat-list>
+        <p id="noBuddy" *ngIf="buddies.length == 0">You have no buddy yet.</p>
+    </mat-card-content>
+    <mat-card-actions *ngIf="buddies.length > 4">
+        <a mat-flat-button color="accent" routerLink="/contacts">and {{ buddies.length - 4 }} more</a>
+    </mat-card-actions>
+</mat-card>

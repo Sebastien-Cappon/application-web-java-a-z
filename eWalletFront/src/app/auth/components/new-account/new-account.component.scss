@@ -1,0 +1,24 @@
+mat-card {
+    overflow: hidden;
+}
+
+mat-card-content {
+    h2:first-child {
+        margin-top: 0;
+    }
+}
+
+#alreadyCreatedError {
+    margin: 0;
+
+    color: #f44336;
+    text-align: center;
+}
+
+mat-card-actions {
+    padding: 16px 16px 16px 16px !important;
+    
+    button {
+        min-width: 150px;
+    }
+}

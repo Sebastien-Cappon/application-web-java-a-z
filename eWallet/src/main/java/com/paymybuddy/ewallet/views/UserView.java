@@ -10,7 +10,8 @@ public class UserView {
 	public interface AmountView {}
 	public interface ActiveView {}
 	
-	public interface LoginView extends IdView, FirstnameView, LastnameView {}
+	public interface LoginView extends IdView, FirstnameView, LastnameView, AmountView {}
 	public interface ProfileView extends FirstnameView, LastnameView, EmailView {}
+	public interface UserAmountView extends IdView, AmountView {}
 	public interface BuddyView extends IdView, FirstnameView, LastnameView, EmailView, ActiveView {}
 }

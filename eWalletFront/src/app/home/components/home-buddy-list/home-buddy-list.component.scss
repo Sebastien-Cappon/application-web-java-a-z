@@ -1,0 +1,47 @@
+mat-card {
+    margin: 16px;
+}
+
+mat-list {
+    padding: 0;
+
+    mat-list-item:nth-child(2n+1) {
+        background-color: #e5f6fe;
+    }
+
+    .inactiveBuddy {
+        font-style: italic;
+        color: rgba(0, 0, 0, .50);
+        
+        i {
+            font-size: 14px;
+        }
+    }
+}
+
+#noBuddy {
+    width: 100%;
+    height: 200px;
+    line-height: 200px;
+    margin: 0 0 16px 0;
+
+    color: #d3d3d3;
+    font-size: 18px;
+    text-align: center;
+}
+
+mat-card-actions {
+    margin-top: 16px;
+
+    a {
+        display: inline-block;
+        width: 150px;
+        margin: 0 auto;
+        line-height: 34px;
+
+        text-align: center;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #FFF;
+    }
+}

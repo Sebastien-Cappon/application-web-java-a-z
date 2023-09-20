@@ -53,8 +53,15 @@ mat-accordion {
         .historyDescription {
             color: rgba(0, 0, 0, .5)
         }
+
+        .noCommentDescription {
+            font-variant: small-caps;
+        }
     }
 
+    mat-expansion-panel:nth-child(2n) {
+        background-color: #f8f8f8;
+    }
     mat-expansion-panel:nth-child(2n+1) {
         background-color: #e5f6fe;
     }

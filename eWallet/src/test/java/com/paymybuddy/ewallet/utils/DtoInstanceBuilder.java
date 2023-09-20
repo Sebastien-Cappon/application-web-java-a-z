@@ -1,12 +1,39 @@
 package com.paymybuddy.ewallet.utils;
 
 import com.paymybuddy.ewallet.dto.BuddyAddDto;
+import com.paymybuddy.ewallet.dto.EwalletTransactionAddDto;
 import com.paymybuddy.ewallet.dto.TransactionAddDto;
 import com.paymybuddy.ewallet.dto.UserLoginDto;
 import com.paymybuddy.ewallet.dto.UserProfileDto;
 import com.paymybuddy.ewallet.dto.UserTransactionDto;
 
 public class DtoInstanceBuilder {
+	
+	public static BuddyAddDto createBuddyAddDto(int id, String email) {
+		BuddyAddDto buddyAddDto = new BuddyAddDto();
+		buddyAddDto.setUserId(id);
+		buddyAddDto.setNewBuddyEmail(email);
+
+		return buddyAddDto;
+	}
+	
+	public static EwalletTransactionAddDto createEwalletTransactionAddDto(int userId, double amount) {
+		EwalletTransactionAddDto ewalletTransactionAddDto = new EwalletTransactionAddDto();
+		ewalletTransactionAddDto.setUserId(userId);
+		ewalletTransactionAddDto.setAmount(amount);
+
+		return ewalletTransactionAddDto;
+	}
+	
+	public static TransactionAddDto createTransactionAddDto(int senderId, UserTransactionDto receiver, double amount, String comment) {
+		TransactionAddDto transactionAddDto = new TransactionAddDto();
+		transactionAddDto.setSenderId(senderId);
+		transactionAddDto.setReceiver(receiver);
+		transactionAddDto.setAmount(amount);
+		transactionAddDto.setComment(comment);
+
+		return transactionAddDto;
+	}
 	
 	public static UserLoginDto createUserLoginDto(String email, String password) {
 		UserLoginDto userLoginDto = new UserLoginDto();
@@ -35,23 +62,5 @@ public class DtoInstanceBuilder {
 		userTransactionDto.setActive(active);
 
 		return userTransactionDto;
-	}
-	
-	public static TransactionAddDto createTransactionAddDto(int senderId, UserTransactionDto receiver, double amount, String comment) {
-		TransactionAddDto transactionAddDto = new TransactionAddDto();
-		transactionAddDto.setSenderId(senderId);
-		transactionAddDto.setReceiver(receiver);
-		transactionAddDto.setAmount(amount);
-		transactionAddDto.setComment(comment);
-
-		return transactionAddDto;
-	}
-
-	public static BuddyAddDto createBuddyAddDto(int id, String email) {
-		BuddyAddDto buddyAddDto = new BuddyAddDto();
-		buddyAddDto.setUserId(id);
-		buddyAddDto.setNewBuddyEmail(email);
-
-		return buddyAddDto;
 	}
 }

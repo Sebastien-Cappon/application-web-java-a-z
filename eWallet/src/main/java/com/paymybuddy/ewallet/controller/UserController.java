@@ -63,7 +63,13 @@ public class UserController {
 		return iUserService.getUserById(userId);
 	}
 
-
+	@JsonView(UserView.UserAmountView.class)
+	@GetMapping("/users/amount/{id}")
+	@ResponseBody
+	public User getUserById_forHomePage(@PathVariable("id") int userId) {
+		return iUserService.getUserById(userId);
+	}
+	
 	@JsonView(UserView.LoginView.class)
 	@PostMapping("/login")
 	@ResponseBody

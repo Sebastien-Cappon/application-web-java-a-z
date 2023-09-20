@@ -1,0 +1,19 @@
+mat-card {
+    margin: 16px;
+
+    mat-card-header {
+        display: block;
+
+        mat-card-title {
+            width: calc(100% - 24px);
+
+            h1 span {
+                float: right;
+            }
+        }
+    }
+}
+
+mat-card-actions button {
+    min-width: 150px;
+}

@@ -1,31 +1,37 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, tap } from "rxjs";
+import { BehaviorSubject, Observable, catchError, map, of, tap } from "rxjs";
 import { Transaction } from "src/app/core/models/transaction.model";
 import { environment } from "src/app/environments/environment";
+import { Sorter } from "../models/sorter.model";
 
 @Injectable()
 export class TransactionsService {
 
     constructor(private httpClient: HttpClient) { }
+    
+    private _transfersSorter$ = new BehaviorSubject<Sorter>({
+        sortBy: "",
+        orderBy: ""
+    })
+    get transfersSorter$(): Observable<Sorter> {
+        return this._transfersSorter$.asObservable();
+    }
 
     private _transactions$ = new BehaviorSubject<Transaction[]>([]);
     get transactions$(): Observable<Transaction[]> {
         return this._transactions$.asObservable();
     }
 
-    getTransactions() {
-        this.httpClient.get<Transaction[]>(`${environment.apiUrl}/transactions`).pipe(
-            tap(transactions => {
-                this._transactions$.next(transactions);
-            })
-        ).subscribe();
+    private setTransferSorterStatus(sorter: Sorter) {
+        this._transfersSorter$.next(sorter);
     }
 
     getHistory(userId: number) {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/${userId}`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "", orderBy: ""});
             })
         ).subscribe();
     }
@@ -34,6 +40,7 @@ export class TransactionsService {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/${userId}?sortBy=date&order=desc`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "date", orderBy: "desc"});
             })
         ).subscribe();
     }
@@ -42,6 +49,7 @@ export class TransactionsService {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/${userId}?sortBy=date&order=asc`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "date", orderBy: "asc"});
             })
         ).subscribe();
     }
@@ -50,6 +58,7 @@ export class TransactionsService {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/${userId}?sortBy=buddy&order=desc`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "buddy", orderBy: "desc"});
             })
         ).subscribe();
     }
@@ -58,6 +67,7 @@ export class TransactionsService {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/${userId}?sortBy=buddy&order=asc`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "buddy", orderBy: "asc"});
             })
         ).subscribe();
     }
@@ -66,12 +76,22 @@ export class TransactionsService {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/${userId}?sortBy=amount&order=desc`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "amount", orderBy: "desc"});
             })
         ).subscribe();
     }
 
     getHistory_orderByAmountAsc(userId: number) {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/${userId}?sortBy=amount&order=asc`).pipe(
+            tap(transactions => {
+                this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "amount", orderBy: "asc"});
+            })
+        ).subscribe();
+    }
+
+    getEwalletHistory(userId: number) {
+        this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/ewallet/${userId}`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
             })
@@ -82,6 +102,7 @@ export class TransactionsService {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/between/${userId}-${buddyId}`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "", orderBy: ""});
             })
         ).subscribe();
     }
@@ -90,6 +111,7 @@ export class TransactionsService {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/between/${userId}-${buddyId}?sortBy=date&order=desc`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "date", orderBy: "desc"});
             })
         ).subscribe();
     }
@@ -98,6 +120,7 @@ export class TransactionsService {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/between/${userId}-${buddyId}?sortBy=date&order=asc`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "date", orderBy: "asc"});
             })
         ).subscribe();
     }
@@ -106,6 +129,7 @@ export class TransactionsService {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/between/${userId}-${buddyId}?sortBy=amount&order=desc`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "amount", orderBy: "desc"});
             })
         ).subscribe();
     }
@@ -114,6 +138,7 @@ export class TransactionsService {
         this.httpClient.get<Transaction[]>(`${environment.apiUrl}/history/between/${userId}-${buddyId}?sortBy=amount&order=asc`).pipe(
             tap(transactions => {
                 this._transactions$.next(transactions);
+                this.setTransferSorterStatus({sortBy: "amount", orderBy: "asc"});
             })
         ).subscribe();
     }

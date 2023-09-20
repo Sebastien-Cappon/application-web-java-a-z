@@ -5,10 +5,13 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthService } from './services/auth.service';
 import { LoginComponent } from './components/login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NewAccountComponent } from './components/new-account/new-account.component';
+import { NewAccountService } from './services/new-account.service';
 
 @NgModule({
   declarations: [
-    LoginComponent
+    LoginComponent,
+    NewAccountComponent
   ],
   imports: [
     AuthRoutingModule,
@@ -17,7 +20,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
   ],
   providers: [
-    AuthService
+    AuthService,
+    NewAccountService
   ]
 })
 export class AuthModule { }

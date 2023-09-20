@@ -18,8 +18,11 @@
                 <mat-error>Incorrects login. Please try again.</mat-error>
             </div>
         </mat-card-content>
-        <mat-card-actions *ngIf="loginForm.valid">
-            <button mat-stroked-button color="accent" (click)="onLogin()" [disabled]="isLoading" >
+        <mat-card-actions>
+            <div *ngIf="loginForm.invalid" id="newAccountLinkDiv">
+                <span (click)="openNewAccountDialog()">Create an account</span>
+            </div>
+            <button *ngIf="loginForm.valid" mat-stroked-button color="accent" (click)="onLogin()" [disabled]="isLoading" >
                 <span *ngIf="!isLoading">Log in</span>
                 <mat-spinner *ngIf="isLoading" color="accent" mode="indeterminate"></mat-spinner>
             </button>
@@ -28,7 +31,7 @@
     
     <mat-card *ngIf="isLogged" [formGroup]="loginForm" id="loginCard">
         <mat-card-header>
-            <mat-card-title background-color="primary">Log out</mat-card-title>
+            <mat-card-title background-color="primary"><h1>Log out</h1></mat-card-title>
         </mat-card-header>
         <mat-card-content *ngIf="currentUser$ | async as currentUser">
             <div id="logoutMessage">

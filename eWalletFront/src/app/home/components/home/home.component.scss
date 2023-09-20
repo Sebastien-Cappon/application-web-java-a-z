@@ -1,0 +1,30 @@
+@media (min-width : 800px) {
+    .homeRow .homeCol {
+        display: inline-block;
+    }
+    
+    .homeRow .homeCol:first-child {
+        width: 60%;
+    }
+    
+    .homeRow .homeCol:last-child {
+        width: 40%;
+        margin-left: -16px ;
+    }
+}
+
+@media (max-width : 800px) {
+    .homeRow:first-child {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .homeRow:last-child {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.homeRow .homeCol {
+    margin-bottom: -16px;
+}

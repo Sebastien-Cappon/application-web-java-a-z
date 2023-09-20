@@ -1,0 +1,64 @@
+<mat-card *ngIf="adminViewTransactions$ | async as transactions">
+    <mat-card-header>
+        <mat-card-title background-color="primary"><h2>Admin overview</h2></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <p id="adminWealthMessage">To date, PayMyBuddy has earned <b>{{ transactionFeeTotal | currency:'EUR' }}</b> from fees.</p>
+        <div class="transactionHeader" *ngIf="adminViewTransfersSorter$ | async as adminViewTransfersSorter">
+            <div>Date
+                <button *ngIf="adminViewTransfersSorter.sortBy != 'date' || adminViewTransfersSorter.orderBy != 'asc'" (click)="onOrderTransactionsByDateAsc()">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+                <button *ngIf="adminViewTransfersSorter.sortBy == 'date' && adminViewTransfersSorter.orderBy == 'asc'" (click)="onOrderTransactionsByDateDesc()">
+                    <mat-icon>arrow_drop_up</mat-icon>
+                </button>
+            </div>
+            <div>Sender
+                <button *ngIf="adminViewTransfersSorter.sortBy != 'sender' || adminViewTransfersSorter.orderBy != 'asc'" (click)="onOrderTransactionsBySenderAsc()">
+                    <mat-icon>arrow_drop_down</mat-icon></button>
+                <button *ngIf="adminViewTransfersSorter.sortBy == 'sender' && adminViewTransfersSorter.orderBy == 'asc'" (click)="onOrderTransactionsBySenderDesc()">
+                    <mat-icon>arrow_drop_up</mat-icon>
+                </button>
+            </div>
+            <div>Receiver
+                <button *ngIf="adminViewTransfersSorter.sortBy != 'receiver' || adminViewTransfersSorter.orderBy != 'asc'" (click)="onOrderTransactionsByReceiverAsc()">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+                <button *ngIf="adminViewTransfersSorter.sortBy == 'receiver' && adminViewTransfersSorter.orderBy == 'asc'" (click)="onOrderTransactionsByReceiverDesc()">
+                    <mat-icon>arrow_drop_up</mat-icon>
+                </button>
+            </div>
+            <div>Amount
+                <button *ngIf="adminViewTransfersSorter.sortBy != 'amount' || adminViewTransfersSorter.orderBy != 'asc'" (click)="onOrderTransactionsByAmountAsc()">
+                    <mat-icon>arrow_drop_down</mat-icon>
+                </button>
+                <button *ngIf="adminViewTransfersSorter.sortBy == 'amount' && adminViewTransfersSorter.orderBy == 'asc'" (click)="onOrderTransactionsByAmountDesc()">
+                    <mat-icon>arrow_drop_up</mat-icon>
+                </button>
+            </div>
+            <div>Fee</div>
+        </div>
+        <div class="emptyObservableDiv" *ngIf="transactions.length == 0">
+            You have not made any transfer yet
+        </div>
+        <mat-accordion>
+            <mat-expansion-panel *ngFor="let transaction of transactions" hideToggle>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        {{ transaction.date }}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        <div>{{ transaction.sender.firstname }} {{ transaction.sender.lastname }}</div>
+                        <div>{{ transaction.receiver.firstname }} {{ transaction.receiver.lastname }}</div>
+                        <div>{{ transaction.amount | currency:'EUR' }}</div>
+                        <div>(-{{ transaction.fee | currency:'EUR' }})</div>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                <span class="historyDescription" [ngClass]="transaction.description !== '' ? '' : 'noCommentDescription'">{{ transaction.description !== '' ? transaction.description : "No comment have been left" }}</span>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-stroked-button color="warn" mat-dialog-close=>Close</button>
+    </mat-card-actions>
+</mat-card>

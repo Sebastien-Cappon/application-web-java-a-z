@@ -1,25 +1,35 @@
 <div class="container">
-    <mat-card *ngIf="buddy$ | async as buddy">
-        <mat-card-header>
-            <mat-card-title background-color="primary"><h1>{{ buddy.firstname }} {{ buddy.lastname }}</h1></mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-            <div class="transactionHeader">
-                <div>Date
-                    <button *ngIf="!isOrderedByDateAsc" (click)="onOrderHistoryBetweenByDate()"><mat-icon>arrow_drop_down</mat-icon></button>
-                    <button *ngIf="isOrderedByDateAsc" (click)="onOrderHistoryBetweenByDate()"><mat-icon>arrow_drop_up</mat-icon></button>
+    <div class="matCardWrapper">
+        <mat-card *ngIf="buddy$ | async as buddy">
+            <mat-card-header>
+                <mat-card-title background-color="primary"><h1>{{ buddy.firstname }} {{ buddy.lastname }}</h1></mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="transactionHeader" *ngIf="transfersSorter$ | async as transfersSorter">
+                    <div>Date
+                        <button *ngIf="transfersSorter.sortBy != 'date' || transfersSorter.orderBy != 'asc'" (click)="onOrderHistoryBetweenByDateAsc()">
+                            <mat-icon>arrow_drop_down</mat-icon>
+                        </button>
+                        <button *ngIf="transfersSorter.sortBy == 'date' && transfersSorter.orderBy == 'asc'" (click)="onOrderHistoryBetweenByDateDesc()">
+                            <mat-icon>arrow_drop_up</mat-icon>
+                        </button>
+                    </div>
+                    <div>Buddy</div>
+                    <div>Amount
+                        <button *ngIf="transfersSorter.sortBy != 'amount' || transfersSorter.orderBy != 'asc'" (click)="onOrderHistoryBetweenByAmountAsc()">
+                            <mat-icon>arrow_drop_down</mat-icon>
+                        </button>
+                        <button *ngIf="transfersSorter.sortBy == 'amount' && transfersSorter.orderBy == 'asc'" (click)="onOrderHistoryBetweenByAmountDesc()">
+                            <mat-icon>arrow_drop_up</mat-icon>
+                        </button>
+                    </div>
+                    <div>Fee</div>
                 </div>
-                <div>Buddy</div>
-                <div>Amount
-                    <button *ngIf="!isOrderedByAmountAsc" (click)="onOrderHistoryBetweenByAmount()"><mat-icon>arrow_drop_down</mat-icon></button>
-                    <button *ngIf="isOrderedByAmountAsc" (click)="onOrderHistoryBetweenByAmount()"><mat-icon>arrow_drop_up</mat-icon></button>
-                </div>
-                <div>Fee</div>
-            </div>
-            <app-transaction-list></app-transaction-list>
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-stroked-button color="warn" (click)="onBack()" >Back</button>
-        </mat-card-actions>
-    </mat-card>
+                <app-transaction-list></app-transaction-list>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-stroked-button color="warn" (click)="onBack()" >Back</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
 </div>

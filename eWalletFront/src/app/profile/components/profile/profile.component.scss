@@ -1,14 +1,18 @@
+mat-card {
+    margin: 16px;
+}
+
 #welcomeMessage {
     margin-top: 0px;
     text-align: center;
 }
 
-mat-card {
-    width: 800px;
-}
-
 mat-card-actions {
     padding: 16px 16px 16px 16px !important;
+    
+    button {
+        min-width: 150px;
+    }
 }
 
 .profileInfoDiv {

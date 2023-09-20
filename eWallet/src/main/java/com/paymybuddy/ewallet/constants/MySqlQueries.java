@@ -2,8 +2,10 @@ package com.paymybuddy.ewallet.constants;
 
 public class MySqlQueries {
 
-	public static final String allTransaction_orderByReceiverNameAsc = "SELECT * FROM transaction JOIN user ON transaction.transaction_receiver = user.user_id ORDER BY user.user_lastname ASC, user.user_firstname ASC, transaction_date DESC;";
-	public static final String allTransaction_orderByReceiverNameDesc = "SELECT * FROM transaction JOIN user ON transaction.transaction_receiver = user.user_id ORDER BY user.user_lastname DESC, user.user_firstname DESC, transaction_date DESC;";
+	public static final String allTransaction_orderBySenderNameAsc = "SELECT * FROM transaction JOIN user ON transaction.transaction_sender = user.user_id ORDER BY user.user_firstname ASC, user.user_lastname ASC";
+	public static final String allTransaction_orderBySenderNameDesc = "SELECT * FROM transaction JOIN user ON transaction.transaction_sender = user.user_id ORDER BY user.user_firstname DESC, user.user_lastname DESC";
+	public static final String allTransaction_orderByReceiverNameAsc = "SELECT * FROM transaction JOIN user ON transaction.transaction_receiver = user.user_id ORDER BY user.user_firstname ASC, user.user_lastname ASC";
+	public static final String allTransaction_orderByReceiverNameDesc = "SELECT * FROM transaction JOIN user ON transaction.transaction_receiver = user.user_id ORDER BY user.user_firstname DESC, user.user_lastname DESC";
 	
 	public static final String allTransactionBySenderAndReceiver = "SELECT * FROM transaction WHERE transaction_sender = ?1 AND transaction_receiver = ?2 OR transaction_sender = ?2 AND transaction_receiver = ?1 ORDER BY transaction_date DESC;";
 	public static final String allTransactionBySenderAndReceiver_orderByDateAsc = "SELECT * FROM transaction WHERE transaction_sender = ?1 AND transaction_receiver = ?2 OR transaction_sender = ?2 AND transaction_receiver = ?1 ORDER BY transaction_date ASC;";

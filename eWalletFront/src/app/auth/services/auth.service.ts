@@ -19,6 +19,7 @@ export class AuthService {
             tap((apiResponse) => {
                 sessionStorage.setItem('authToken', this.setToken(512));
                 sessionStorage.setItem('currentUserId', JSON.parse(JSON.stringify(apiResponse)).id);
+                sessionStorage.setItem('ewalletAmount', JSON.parse(JSON.stringify(apiResponse)).amount);
             }),
             map(() => true),
             catchError(() => of(false))
@@ -32,6 +33,7 @@ export class AuthService {
     logout(): boolean {
         sessionStorage.removeItem('authToken');
         sessionStorage.removeItem('currentUserId');
+        sessionStorage.removeItem(('ewalletAmount'));
         
         return (sessionStorage.getItem('authToken') == null && sessionStorage.getItem('currentUserId') == null);
     }

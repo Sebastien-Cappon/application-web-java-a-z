@@ -1,19 +1,35 @@
-<div class="emptyObservableDiv" *ngIf="(transactions$ | async)?.length == 0">
-    You have not made any transfer yet
-</div>
-<mat-accordion *ngIf="transactions$ | async as transactions">
-    <mat-expansion-panel *ngFor="let transaction of transactions" hideToggle>
-        <mat-expansion-panel-header>
-            <mat-panel-title [ngClass]="transaction.sender.id === currentUserId ? 'historyHeaderSender' : 'historyHeaderReceiver'">
-                {{ transaction.date }}
-            </mat-panel-title>
-            <mat-panel-description [ngClass]="transaction.sender.id === currentUserId ? 'historyHeaderSender' : 'historyHeaderReceiver'">
-                <div *ngIf="transaction.sender.id == currentUserId"><mat-icon>call_made</mat-icon> {{ transaction.receiver.firstname }} {{ transaction.receiver.lastname }}</div>
-                <div *ngIf="transaction.receiver.id == currentUserId"><mat-icon>call_received</mat-icon> {{ transaction.sender.firstname }} {{ transaction.sender.lastname }}</div>
-                <div>{{ transaction.amount | currency:'EUR' }}</div>
-                <div>(-{{ transaction.fee | currency:'EUR' }})</div>
-            </mat-panel-description>
-        </mat-expansion-panel-header>
-        <span class="historyDescription">{{ transaction.description }}</span>
-    </mat-expansion-panel>
-</mat-accordion>
+<ng-container *ngIf="transactions$ | async as transactions">
+    <div class="emptyObservableDiv" *ngIf="transactions.length == 0">
+        You have not made any transfer yet
+    </div>
+    <mat-accordion *ngIf="transactions.length > 0">
+        <mat-expansion-panel *ngFor="let transaction of transactions" hideToggle>
+            <mat-expansion-panel-header *ngIf="transaction.sender.id !== transaction.receiver.id">
+                <mat-panel-title [ngClass]="transaction.sender.id === currentUserId ? 'historyHeaderSender' : 'historyHeaderReceiver'">
+                    {{ transaction.date }}
+                </mat-panel-title>
+                <mat-panel-description [ngClass]="transaction.sender.id === currentUserId ? 'historyHeaderSender' : 'historyHeaderReceiver'">
+                    <div *ngIf="transaction.sender.id == currentUserId"><mat-icon>call_made</mat-icon> {{ transaction.receiver.firstname }} {{ transaction.receiver.lastname }}</div>
+                    <div *ngIf="transaction.receiver.id == currentUserId"><mat-icon>call_received</mat-icon> {{ transaction.sender.firstname }} {{ transaction.sender.lastname }}</div>
+                    <div>{{ transaction.amount | currency:'EUR' }}</div>
+                    <div>(-{{ transaction.fee | currency:'EUR' }})</div>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-expansion-panel-header *ngIf="transaction.sender.id === transaction.receiver.id">
+                <mat-panel-title [ngClass]="transaction.amount < 0 ? 'historyHeaderSender' : 'historyHeaderReceiver'">
+                    {{ transaction.date }}
+                </mat-panel-title>
+                <mat-panel-description [ngClass]="transaction.amount < 0 ? 'historyHeaderSender' : 'historyHeaderReceiver'">
+                    <div>
+                        <mat-icon *ngIf="transaction.amount < 0">call_made</mat-icon>
+                        <mat-icon *ngIf="transaction.amount >= 0">call_received</mat-icon>
+                        {{ transaction.sender.firstname }} {{ transaction.sender.lastname }}
+                    </div>
+                    <div>{{ transaction.amount | currency:'EUR' }}</div>
+                    <div></div>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <span class="historyDescription" [ngClass]="transaction.description !== '' ? '' : 'noCommentDescription'">{{ transaction.description !== '' ? transaction.description : "No comment have been left" }}</span>
+        </mat-expansion-panel>
+    </mat-accordion>
+</ng-container>

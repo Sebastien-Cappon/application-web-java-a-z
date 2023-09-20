@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Sorter } from 'src/app/shared/models/sorter.model';
 import { TransactionsService } from 'src/app/shared/services/transactions.service';
 
 @Component({
@@ -13,45 +15,35 @@ export class TransferListComponent {
   ) { }
 
   private currentUserId = Number(sessionStorage.getItem('currentUserId'));
-  isOrderedByDateAsc = false;
-  isOrderedByBuddyAsc = false;
-  isOrderedByAmountAsc = false;
+  transfersSorter$!: Observable<Sorter>;
 
   ngOnInit() {
     this.initObservables();
   }
 
   initObservables() {
+    this.transfersSorter$ = this.transactionsService.transfersSorter$;
     this.transactionsService.getHistory(this.currentUserId);
   }
 
-  onOrderHistoryByDate() {
-    if(!this.isOrderedByDateAsc){
-      this.transactionsService.getHistory_orderByDateAsc(this.currentUserId);
-      this.isOrderedByDateAsc = true;
-    } else {
-      this.transactionsService.getHistory_orderByDateDesc(this.currentUserId);
-      this.isOrderedByDateAsc = false;
-    }
+  onOrderHistoryByDateAsc() {
+    this.transactionsService.getHistory_orderByDateAsc(this.currentUserId);
+  }
+  onOrderHistoryByDateDesc() {
+    this.transactionsService.getHistory_orderByDateDesc(this.currentUserId);
   }
 
-  onOrderHistoryByBuddy() {
-    if(!this.isOrderedByBuddyAsc){
-      this.transactionsService.getHistory_orderByBuddyAsc(this.currentUserId);
-      this.isOrderedByBuddyAsc = true;
-    } else {
-      this.transactionsService.getHistory_orderByBuddyDesc(this.currentUserId);
-      this.isOrderedByBuddyAsc = false;
-    }
+  onOrderHistoryByBuddyAsc() {
+    this.transactionsService.getHistory_orderByBuddyAsc(this.currentUserId);
+  }
+  onOrderHistoryByBuddyDesc() {
+    this.transactionsService.getHistory_orderByBuddyDesc(this.currentUserId);
   }
 
-  onOrderHistoryByAmount() {
-    if(!this.isOrderedByAmountAsc){
-      this.transactionsService.getHistory_orderByAmountAsc(this.currentUserId);
-      this.isOrderedByAmountAsc = true;
-    } else {
-      this.transactionsService.getHistory_orderByAmountDesc(this.currentUserId);
-      this.isOrderedByAmountAsc = false;
-    }
+  onOrderHistoryByAmountAsc() {
+    this.transactionsService.getHistory_orderByAmountAsc(this.currentUserId);
+  }
+  onOrderHistoryByAmountDesc() {
+    this.transactionsService.getHistory_orderByAmountDesc(this.currentUserId);
   }
 }

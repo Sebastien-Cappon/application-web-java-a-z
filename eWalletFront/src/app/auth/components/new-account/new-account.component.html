@@ -1,0 +1,68 @@
+<mat-card [formGroup]="newAccountForm">
+    <mat-card-header>
+        <mat-card-title background-color="primary"><h1>New account</h1></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <h2>Personnal informations</h2>
+        <mat-grid-list cols="2" rowHeight="76px">
+            <mat-grid-tile>
+                <mat-form-field color="accent" style="margin-right: 8px;">
+                    <mat-label>Firstname</mat-label>
+                    <input matInput type="text" [formControl]="newAccountFirstnameCtrl">
+                    <mat-error>Firstname required.</mat-error>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field color="accent" style="margin-left: 8px;">
+                    <mat-label>Lastname</mat-label>
+                    <input matInput type="text" [formControl]="newAccountLastnameCtrl">
+                    <mat-error>Lastname required.</mat-error>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+
+        <h2>Login informations</h2>
+        <mat-grid-list cols="2" rowHeight="76px" [formGroup]="newAccountEmailForm">
+            <mat-grid-tile>
+                <mat-form-field color="accent" style="margin-right: 8px;">
+                    <mat-label>E-mail address</mat-label>
+                    <input matInput type="text" [formControl]="newAccountEmailCtrl" placeholder="newemail@adress.com">
+                    <mat-error>Valid e-mail address required.</mat-error>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field color="accent" style="margin-left: 8px;" *ngIf="showNewAccountConfirmEmail$ | async">
+                    <mat-label>E-mail address confirmation</mat-label>
+                    <input matInput type="text" [formControl]="newAccountConfirmEmailCtrl" placeholder="confirmemail@please.com">
+                    <mat-error>{{ getNewAccountFormControlErrorText(newAccountConfirmEmailCtrl) }}</mat-error>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+        <mat-error class="groupControlError" *ngIf="showNewAccountEmailError$ | async">Both e-mail addresses don't match.</mat-error>
+
+        <mat-grid-list cols="2" rowHeight="76px" [formGroup]="newAccountPasswordForm">
+        <mat-grid-tile>
+                <mat-form-field color="accent" style="margin-right: 8px;">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" [formControl]="newAccountPasswordCtrl">
+                    <mat-error>Password required.</mat-error>
+                </mat-form-field>
+            </mat-grid-tile>
+            <mat-grid-tile>
+                <mat-form-field color="accent" style="margin-left: 8px;" *ngIf="showNewAccountConfirmPassword$ | async">
+                    <mat-label>Password confirmation</mat-label>
+                    <input matInput type="password" [formControl]="newAccountConfirmPasswordCtrl">
+                    <mat-error>Please confirm password.</mat-error>
+                </mat-form-field>
+            </mat-grid-tile>
+        </mat-grid-list>
+        <mat-error class="groupControlError" *ngIf="showNewAccountPasswordError$ | async">Both passwords don't match.</mat-error>
+        <p id="alreadyCreatedError" *ngIf="isAlreadyCreated">An account already exist with this e-mail address.</p>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-flat-button color="primary" (click)="onCreateAccount()" [disabled]="isLoading || newAccountForm.invalid || newAccountEmailForm.invalid || newAccountPasswordForm.invalid">
+            <span *ngIf="!isLoading" style="color: #FFF;">Create Account</span>
+            <mat-spinner *ngIf="isLoading" color="accent" mode="indeterminate"></mat-spinner>
+        </button>
+    </mat-card-actions>
+</mat-card>
