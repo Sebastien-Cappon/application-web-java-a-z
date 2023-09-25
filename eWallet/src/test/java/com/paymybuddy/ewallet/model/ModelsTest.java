@@ -11,7 +11,7 @@ import com.paymybuddy.ewallet.utils.InstanceBuilder;
 
 public class ModelsTest {
 
-	private User user = InstanceBuilder.createUser(1, "John", "Smith", "john.smith@mrandmrs.smth", false, "NotAnHashedAndSaledPwd", 30.0, true);
+	private User user = InstanceBuilder.createUser(1, "John", "Smith", "john.smith@mrandmrs.smth", "NotAnHashedAndSaledPwd", 30.0, true);
 	
 	@Test
 	public void userToString_isNotBlank() {

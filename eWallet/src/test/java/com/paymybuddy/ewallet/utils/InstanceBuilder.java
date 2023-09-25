@@ -22,13 +22,12 @@ public class InstanceBuilder {
 		return transaction;
 	}
 	
-	public static User createUser(int id, String firstname, String lastName, String email, boolean social, String password, double amount, boolean active) {
+	public static User createUser(int id, String firstname, String lastName, String email, String password, double amount, boolean active) {
 		User user = new User();
 		user.setId(id);
 		user.setFirstname(firstname);
 		user.setLastname(lastName);
 		user.setEmail(email);
-		user.setSocial(social);
 		user.setPassword(password);
 		user.setAmount(amount);
 		user.setActive(active);

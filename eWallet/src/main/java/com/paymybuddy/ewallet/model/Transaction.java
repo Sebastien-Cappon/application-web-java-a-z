@@ -16,6 +16,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+/**
+ * A model class which creates the POJO (Plain Old Java Object)
+ * <code>Transaction</code>. It contains getters and setters, as well as an
+ * override <code>toSring()</code> method for display in the console.
+ *
+ * @singularity <code>Transaction</code> is linked to the
+ *              <code>transaction</code> table of the database. It contains two
+ *              Many-To-One relationship with the <code>User</code> class, for
+ *              attributes <code>sender</code> and <code>receiver</code>.
+ *
+ * @author Sébastien Cappon
+ * @version 1.0
+ */
 @Entity
 @DynamicUpdate
 @Table(name = "transaction")
@@ -23,7 +36,6 @@ public class Transaction {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonView(TransactionView.IdView.class)
 	@Column(name = "transaction_id")
 	private int id;
 	@JsonView(TransactionView.DateView.class)
@@ -46,7 +58,7 @@ public class Transaction {
 	@JsonView(TransactionView.DescriptionView.class)
 	@Column(name = "transaction_description")
 	private String description;
-	
+
 	public int getId() {
 		return id;
 	}
@@ -103,6 +115,13 @@ public class Transaction {
 		this.description = description;
 	}
 
+	/**
+	 * An override method for user-friendly display of <code>Transaction</code>
+	 * attributes in the console. Not necessary, except for test purposes.
+	 * 
+	 * @return <code>String</code> containing all the attributes of
+	 *         <code>Transaction</code>.
+	 */
 	@Override
 	public String toString() {
 		return ("[" + id + "]" + "[" + date + "]" + "[" + receiver + "]" + "[" + amount + "]" + "[" + fee + "]" + "["

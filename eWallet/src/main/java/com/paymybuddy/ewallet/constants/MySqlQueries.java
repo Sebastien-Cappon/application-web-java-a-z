@@ -1,5 +1,15 @@
 package com.paymybuddy.ewallet.constants;
 
+/**
+ * A class of constants that groups together a list of JPQL <i>(Java Persistence
+ * Query Language)</i> queries. Most of these are linked to the application's
+ * sorting system. Others are specific to the bidirectionnality of the
+ * <code>user_user</code> join table, represented by <code>Buddy.java</code>
+ * model class.
+ *
+ * @author Sébastien Cappon
+ * @version 1.0
+ */
 public class MySqlQueries {
 
 	public static final String allTransaction_orderBySenderNameAsc = "SELECT * FROM transaction JOIN user ON transaction.transaction_sender = user.user_id ORDER BY user.user_firstname ASC, user.user_lastname ASC";

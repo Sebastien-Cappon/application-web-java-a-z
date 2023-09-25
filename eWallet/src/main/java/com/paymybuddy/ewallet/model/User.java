@@ -12,6 +12,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/**
+ * A model class which creates the POJO (Plain Old Java Object) <code>User</code>.
+ * It contains getters and setters, as well as an override
+ * <code>toSring()</code> method for display in the console.
+ *
+ * @singularity <code>User</code> is linked to the <code>user</code> table of
+ *              the database. For security purpose, the password attribute is
+ *              not attached to a view interface.
+ *
+ * @author Sébastien Cappon
+ * @version 1.0
+ */
 @Entity
 @DynamicUpdate
 @Table(name = "user")
@@ -31,10 +43,6 @@ public class User {
 	@JsonView(UserView.EmailView.class)
 	@Column(name = "user_email")
 	private String email;
-	@JsonView(UserView.SocialView.class)
-	@Column(name = "user_social")
-	private boolean social;
-	@JsonView(UserView.PasswordView.class)
 	@Column(name = "user_password")
 	private String password;
 	@JsonView(UserView.AmountView.class)
@@ -43,7 +51,7 @@ public class User {
 	@JsonView(UserView.ActiveView.class)
 	@Column(name = "user_active")
 	private boolean active;
-	
+
 	public int getId() {
 		return id;
 	}
@@ -76,14 +84,6 @@ public class User {
 		this.email = email;
 	}
 
-	public boolean isSocial() {
-		return social;
-	}
-
-	public void setSocial(boolean social) {
-		this.social = social;
-	}
-
 	public String getPassword() {
 		return password;
 	}
@@ -108,9 +108,16 @@ public class User {
 		this.active = active;
 	}
 
+	/**
+	 * An override method for user-friendly display of <code>User</code> attributes
+	 * in the console. Not necessary, except for test purposes.
+	 * 
+	 * @return <code>String</code> containing all the attributes of
+	 *         <code>User</code>.
+	 */
 	@Override
 	public String toString() {
-		return ("[" + id + "]" + "[" + firstname + "]" + "[" + lastname + "]" + "[" + email + "]" + "[isSocial="
-				+ social + "]" + "[" + password + "]" + "[" + amount + "]" + "[isActive=" + active + "]");
+		return ("[" + id + "]" + "[" + firstname + "]" + "[" + lastname + "]" + "[" + email + "]" + "[" + password + "]"
+				+ "[" + amount + "]" + "[isActive=" + active + "]");
 	}
 }

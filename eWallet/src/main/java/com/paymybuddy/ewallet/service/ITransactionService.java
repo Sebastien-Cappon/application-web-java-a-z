@@ -6,6 +6,14 @@ import com.paymybuddy.ewallet.dto.EwalletTransactionAddDto;
 import com.paymybuddy.ewallet.dto.TransactionAddDto;
 import com.paymybuddy.ewallet.model.Transaction;
 
+/**
+ * <code>TransactionService</code> interface that abstracts it from its
+ * implementation in order to achieve better code modularity in compliance with
+ * SOLID principles.
+ *
+ * @author Sébastien Cappon
+ * @version 1.0
+ */
 public interface ITransactionService {
 
 	public List<Transaction> getTransactions();
@@ -17,8 +25,6 @@ public interface ITransactionService {
 	public List<Transaction> getTransactions_orderBySenderNameDesc();
 	public List<Transaction> getTransactions_orderByReceiverNameAsc();
 	public List<Transaction> getTransactions_orderByReceiverNameDesc();
-	
-	public Transaction getTransactionById(int id);
 	
 	public List<Transaction> getTransactionsByUser(int userId);
 	public List<Transaction> getTransactionsByUser_orderByDateAsc(int userId);
@@ -38,6 +44,4 @@ public interface ITransactionService {
 	
 	public Transaction addEwalletTransaction(EwalletTransactionAddDto ewalletTransactionAddDto) throws Exception;
 	public Transaction addTransaction(TransactionAddDto transactionAddDto) throws Exception;
-	public Transaction updateTransactionById(Transaction transaction);
-	public void deleteTransaction(Transaction transaction);
 }

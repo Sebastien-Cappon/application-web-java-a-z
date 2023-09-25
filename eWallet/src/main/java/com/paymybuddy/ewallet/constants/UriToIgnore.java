@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Constants class that regroups a short list of URI that the logger should
- * ignore. Most of these are specific to the resources required to display
- * custom error pages. Only <code>/error</code> is essential in order not to log
- * Spring's automatic masked calls to the <code>/error</code> page when an error
- * is thrown.
+ * A class of constants that regroups a short list of URI that the logger should
+ * ignore. This application don't use Thymeleaf and don't call resources from
+ * <code>/src/main</code>. That's why only <code>/error</code> is essential in
+ * order not to log Spring's automatic masked calls to the <code>/error</code>
+ * page when an error is thrown.
  *
  * @author Sébastien Cappon
  * @version 1.0
@@ -17,6 +17,5 @@ import java.util.List;
 public class UriToIgnore {
 	public static final String errorURI = "/error";
 
-	public static final List<String> uriToIgnore = new ArrayList<>(
-			Arrays.asList(errorURI));
+	public static final List<String> uriToIgnore = new ArrayList<>(Arrays.asList(errorURI));
 }

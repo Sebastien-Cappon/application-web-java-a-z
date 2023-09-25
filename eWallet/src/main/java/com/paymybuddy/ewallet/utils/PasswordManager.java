@@ -10,9 +10,22 @@ import javax.crypto.spec.PBEKeySpec;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * A class that contains a set of methods for hashing, salting, encrypting and
+ * decrypting passwords.
+ *
+ * @author Sébastien Cappon
+ * @version 1.0
+ */
 @Component
 public class PasswordManager {
 
+	/**
+	 * A method that generate a random 16 bytes array using SHA1PRNG. A salt is a
+	 * random "word" juxtaposed to a password after encryption.
+	 *
+	 * @return A <code>byte</code> array.
+	 */
 	public byte[] getSalt() throws NoSuchAlgorithmException {
 		SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
 		byte[] salt = new byte[16];
@@ -21,6 +34,12 @@ public class PasswordManager {
 		return salt;
 	}
 
+	/**
+	 * A method that converts a <code>byte</code> array into an usable
+	 * <code>String</code>
+	 *
+	 * @return A <code>String</code>.
+	 */
 	private static String toHex(byte[] array) throws NoSuchAlgorithmException {
 		BigInteger bigInteger = new BigInteger(1, array);
 		String hex = bigInteger.toString(16);
@@ -33,6 +52,12 @@ public class PasswordManager {
 		}
 	}
 
+	/**
+	 * A method that converts an usable <code>String</code> into a <code>byte</code>
+	 * array.
+	 *
+	 * @return A <code>byte</code> array.
+	 */
 	private static byte[] fromHex(String hex) throws NoSuchAlgorithmException {
 		byte[] bytes = new byte[hex.length() / 2];
 
@@ -43,6 +68,13 @@ public class PasswordManager {
 		return bytes;
 	}
 
+	/**
+	 * A method that encrypts a non-encrypted password using PBKDF2WithHmacSHA1, then
+	 * juxtaposes iterations and salt before the resulting <code>String</code>,
+	 * separating them with colons.
+	 *
+	 * @return A <code>String</code>.
+	 */
 	public String hashPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		int iterations = 1000;
 		byte[] salt = getSalt();
@@ -55,6 +87,21 @@ public class PasswordManager {
 		return iterations + ":" + toHex(salt) + ":" + toHex(hash);
 	}
 
+	/**
+	 * This method splits password retrieved from database using colons as separators
+	 * to recover the iterations, the salt and the encrypted password. It then
+	 * encrypts the password passed as first parameter, juxtaposes the recovered
+	 * salt and the iteration and compares the recult byte by byte with the password
+	 * stored in the database (second parameter).
+	 *
+	 * @singularity <code>^</code> bitwise operator is an EOR. If two bytes are the
+	 *              same, the result is 0. <code>|</code> bitwise operator is an OR.
+	 *              If <code>diff |= value</code>, <code>diff
+	 *              is equal to 0 only if both diff and something are equals to 0.
+	 *              ==</code> results true if diff is equal to 0, false if it's not.
+	 *
+	 * @return A <code>boolean</code>.
+	 */
 	public boolean checkPassword(String passwordInput, String passwordStored) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String[] passwordStoredParts = passwordStored.split(":");
 
@@ -62,20 +109,17 @@ public class PasswordManager {
 		byte[] passwordStoredSalt = fromHex(passwordStoredParts[1]);
 		byte[] passwordStoredHash = fromHex(passwordStoredParts[2]);
 
-		PBEKeySpec pbeKeySpec = new PBEKeySpec(passwordInput.toCharArray(), passwordStoredSalt, passwordStoredIterations, passwordStoredHash.length * 8);
+		PBEKeySpec pbeKeySpec = new PBEKeySpec(passwordInput.toCharArray(), passwordStoredSalt,
+				passwordStoredIterations, passwordStoredHash.length * 8);
 		SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 
 		byte[] passwordInputHash = secretKeyFactory.generateSecret(pbeKeySpec).getEncoded();
-
-		// ^ bitwise operator is an EOR. If two bytes are the same, the result is 0. 
-		// | bitwise operator is an OR. If diff |= value, diff is equal to 0 only if both diff and something are equals to 0.
+ 
 		int diff = passwordStoredHash.length ^ passwordInputHash.length;
 		for (int i = 0; i < passwordStoredHash.length && i < passwordInputHash.length; i++) {
 			diff |= passwordStoredHash[i] ^ passwordInputHash[i];
 		}
 
-		// == results true if diff is equal to 0, false if it's not.
-		// These 2 new notions are probably the most interesting ones of the Project 6 backend.
 		return diff == 0;
 	}
 }

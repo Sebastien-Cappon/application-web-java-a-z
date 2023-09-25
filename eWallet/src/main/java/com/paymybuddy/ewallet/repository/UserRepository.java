@@ -12,6 +12,14 @@ import com.paymybuddy.ewallet.model.User;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * Repository interface which extends the JPA (Jakarta Persistence API)
+ * Repository in order to deal with Derived and JPQL query relative to
+ * <code>User</code> entities.
+ * 
+ * @author Sébastien Cappon
+ * @version 1.0
+ */
 public interface UserRepository extends JpaRepository<User, Integer> {
 
 	List<User> findByOrderByEmailAsc();

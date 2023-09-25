@@ -1,7 +1,5 @@
-package com.paymybuddy.ewallet.controller;
+package com.paymybuddy.ewallet.integration;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -10,162 +8,139 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymybuddy.ewallet.dto.UserLoginDto;
 import com.paymybuddy.ewallet.dto.UserProfileDto;
 import com.paymybuddy.ewallet.model.User;
-import com.paymybuddy.ewallet.service.UserService;
+import com.paymybuddy.ewallet.utils.DtoInstanceBuilder;
 import com.paymybuddy.ewallet.utils.InstanceBuilder;
 
-@WebMvcTest(controllers = UserController.class)
-public class UserControllerTest {
-	
-	private User userResponse = InstanceBuilder.createUser(1, "John", "Smith", "john.smith@mrandmrs.smth", "NotAnHashedAndSaltedPwd", 30.0, true);
+@SpringBootTest
+@AutoConfigureMockMvc
+public class UserEndpointsIT {
 	
 	@Autowired
-	private ObjectMapper objectMapper;
+	ObjectMapper objectMapper;
+	
 	@Autowired
-	private MockMvc mockMvc;
-	@MockBean
-	private UserService userService;
+	MockMvc mockMvc;
 
 	@Test
 	public void getUserById_forLoginPage_shouldReturnOk() throws Exception {
-		when(userService.getUserById(any(Integer.class)))
-			.thenReturn(userResponse);
-		
 		mockMvc.perform(get("/users/login/{id}", "1")
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.id").value(1))
 			.andExpect(jsonPath("$.firstname").value("John"))
-			.andExpect(jsonPath("$.lastname").value("Smith"));
+			.andExpect(jsonPath("$.lastname").value("Wick"));
 	}
-	
+
 	@Test
 	public void getUserById_forProfilePage_shouldReturnOk() throws Exception {
-		when(userService.getUserById(any(Integer.class)))
-			.thenReturn(userResponse);
-		
-		mockMvc.perform(get("/users/profile/{id}", "1")
+		mockMvc.perform(get("/users/profile/{id}", "2")
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.firstname").value("John"))
-			.andExpect(jsonPath("$.lastname").value("Smith"))
-			.andExpect(jsonPath("$.email").value("john.smith@mrandmrs.smth"));
+			.andExpect(jsonPath("$.firstname").value("Winston"))
+			.andExpect(jsonPath("$.lastname").value("Scott"))
+			.andExpect(jsonPath("$.email").value("winston.scott@continental.ny"));
 	}
+
 	@Test
 	public void getUserById_forHomePage_shouldReturnOk() throws Exception {
-		when(userService.getUserById(any(Integer.class)))
-			.thenReturn(userResponse);
-		
 		mockMvc.perform(get("/users/amount/{id}", "1")
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.id").value("1"))
-			.andExpect(jsonPath("$.amount").value(30.0));
+			.andExpect(jsonPath("$.amount").isNotEmpty());
 	}
-	
+
 	@Test
 	public void postUserByEmailAndPassword_shouldReturnOk() throws Exception {
-		when(userService.postUserByEmailAndPassword(any(UserLoginDto.class)))
-			.thenReturn(userResponse);
+		UserLoginDto requestBody = DtoInstanceBuilder.createUserLoginDto("abram.tarasov@tarasov.mob", "IamSt177@liv3");
 		
 		mockMvc.perform(post("/login")
-				.content(objectMapper.writeValueAsString(userResponse))
+				.content(objectMapper.writeValueAsString(requestBody))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(1))
-			.andExpect(jsonPath("$.firstname").value("John"))
-			.andExpect(jsonPath("$.lastname").value("Smith"));
+			.andExpect(jsonPath("$.id").value(54))
+			.andExpect(jsonPath("$.firstname").value("Abram"))
+			.andExpect(jsonPath("$.lastname").value("Tarasov"));
 	}
-	
+
 	@Test
 	public void postUserByEmailAndPassword_shouldThrowBadRequest() throws Exception {
-		when(userService.postUserByEmailAndPassword(any(UserLoginDto.class)))
-			.thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+		UserLoginDto requestBody = DtoInstanceBuilder.createUserLoginDto("abram.tarasov@tarasov.mob", "J'ai oublié");
 		
-		mockMvc.perform(post("/login"))
+		mockMvc.perform(post("/login")
+				.content(objectMapper.writeValueAsString(requestBody))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	public void addUser_shouldReturnCreated() throws Exception {
-		when(userService.addUser(any(User.class)))
-			.thenReturn(userResponse);
+		User requestBody = InstanceBuilder.createUser(9999, "Santino", "D'Antonio", "santino.dantonio@camorra.tbl", "G14nn4sBro7h3r", 0, true);
 		
 		mockMvc.perform(post("/user")
-				.content(objectMapper.writeValueAsString(userResponse))
+				.content(objectMapper.writeValueAsString(requestBody))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isCreated())
-			.andExpect(jsonPath("$.id").value(1))
-			.andExpect(jsonPath("$.amount").value(30.0));
+			.andExpect(jsonPath("$.id").isNotEmpty())
+			.andExpect(jsonPath("$.amount").value(0));
 	}
-	
+
 	@Test
 	public void addUser_shouldThrowBadRequest() throws Exception {
-		when(userService.addUser(any(User.class)))
-			.thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
-		
 		mockMvc.perform(post("/user")
-			.content(objectMapper.writeValueAsString(null))
-			.contentType(MediaType.APPLICATION_JSON)
-			.accept(MediaType.APPLICATION_JSON))
+				.content(objectMapper.writeValueAsString(null))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	public void updateProfile_shouldReturnOk() throws Exception {
-		when(userService.updateProfile(any(Integer.class), any(UserProfileDto.class)))
-			.thenReturn(1);
+		UserProfileDto requestBody = DtoInstanceBuilder.createUserProfileDto("John", "Wick", "john.wick@runaway.run", "iMu5tFl33");
 		
 		mockMvc.perform(put("/users/{id}/profile", "1")
-				.content(objectMapper.writeValueAsString(userResponse))
+				.content(objectMapper.writeValueAsString(requestBody))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void updateProfile_shouldThrowBadRequest() throws Exception {
-		when(userService.updateProfile(any(Integer.class), any(UserProfileDto.class)))
-			.thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
+		UserProfileDto requestBody = DtoInstanceBuilder.createUserProfileDto(null, null, null, null);
 		
-		mockMvc.perform(put("/users/{id}/profile", "1")
-				.content(objectMapper.writeValueAsString(null))
+		mockMvc.perform(put("/users/{id}/profile", "0")
+				.content(objectMapper.writeValueAsString(requestBody))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	public void updateActive_shouldReturnOk() throws Exception {
-		when(userService.updateActive(any(Integer.class), any(Boolean.class)))
-			.thenReturn(any(Integer.class));
-		
 		mockMvc.perform(put("/users/{id}/active", "1")
-				.content(objectMapper.writeValueAsString(any(Boolean.class)))
+				.content(objectMapper.writeValueAsString(1))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void updateActive_shouldThrowBadRequest() throws Exception {
-		when(userService.updateActive(any(Integer.class), any(Boolean.class)))
-			.thenThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST));
-		
-		mockMvc.perform(put("/users/{id}/active", "1")
-				.content(objectMapper.writeValueAsString(null))
+		mockMvc.perform(put("/users/{id}/active", "0")
+				.content(objectMapper.writeValueAsString(1))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest());

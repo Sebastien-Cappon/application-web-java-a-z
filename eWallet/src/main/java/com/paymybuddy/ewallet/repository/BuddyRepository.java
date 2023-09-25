@@ -11,6 +11,14 @@ import com.paymybuddy.ewallet.model.Buddy;
 
 import jakarta.transaction.Transactional;
 
+/**
+ * Repository interface which extends the JPA (Jakarta Persistence API)
+ * Repository in order to deal with JPQL query relative to <code>Buddy</code>
+ * entities.
+ * 
+ * @author Sébastien Cappon
+ * @version 1.0
+ */
 public interface BuddyRepository extends JpaRepository<Buddy, Integer> {
 
 	@Query(value = MySqlQueries.allBuddiesByUser, nativeQuery = true)
