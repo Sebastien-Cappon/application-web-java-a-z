@@ -1,0 +1,11 @@
+com.paymybuddy.ewallet
+com.paymybuddy.ewallet.config
+com.paymybuddy.ewallet.constants
+com.paymybuddy.ewallet.controller
+com.paymybuddy.ewallet.dto
+com.paymybuddy.ewallet.logger
+com.paymybuddy.ewallet.model
+com.paymybuddy.ewallet.repository
+com.paymybuddy.ewallet.service
+com.paymybuddy.ewallet.utils
+com.paymybuddy.ewallet.views

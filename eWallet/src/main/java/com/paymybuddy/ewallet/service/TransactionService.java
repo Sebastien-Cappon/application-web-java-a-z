@@ -152,12 +152,8 @@ public class TransactionService implements ITransactionService {
 	 */
 	@Override
 	public List<Transaction> getTransactionsByUser(int userId) {
-		if(userRepository.findById(userId).isPresent()) {
-			User user = userRepository.findById(userId).get();
-			return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByIdDesc(user, user));
-		}
-		
-		return null;
+		User user = userRepository.findById(userId).get();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByIdDesc(user, user));
 	}
 	
 	/**
@@ -169,12 +165,8 @@ public class TransactionService implements ITransactionService {
 	 */
 	@Override
 	public List<Transaction> getTransactionsByUser_orderByDateAsc(int userId) {
-		if(userRepository.findById(userId).isPresent()) {
-			User user = userRepository.findById(userId).get();
-			return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByDateAsc(user, user));
-		}
-		
-		return null;
+		User user = userRepository.findById(userId).get();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByDateAsc(user, user));
 	}
 	
 	/**
@@ -186,12 +178,8 @@ public class TransactionService implements ITransactionService {
 	 */
 	@Override
 	public List<Transaction> getTransactionsByUser_orderByDateDesc(int userId) {
-		if(userRepository.findById(userId).isPresent()) {
-			User user = userRepository.findById(userId).get();
-			return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByDateDesc(user, user));
-		}
-		
-		return null;
+		User user = userRepository.findById(userId).get();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByDateDesc(user, user));
 	}
 	
 	/**
@@ -203,12 +191,8 @@ public class TransactionService implements ITransactionService {
 	 */
 	@Override
 	public List<Transaction> getTransactionsByUser_orderByAmountAsc(int userId) {
-		if(userRepository.findById(userId).isPresent()) {
-			User user = userRepository.findById(userId).get();
-			return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByAmountAsc(user, user));
-		}
-		
-		return null;
+		User user = userRepository.findById(userId).get();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByAmountAsc(user, user));
 	}
 	
 	/**
@@ -220,12 +204,8 @@ public class TransactionService implements ITransactionService {
 	 */
 	@Override
 	public List<Transaction> getTransactionsByUser_orderByAmountDesc(int userId) {
-		if(userRepository.findById(userId).isPresent()) {
-			User user = userRepository.findById(userId).get();
-			return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByAmountDesc(user, user));
-		}
-		
-		return null;
+		User user = userRepository.findById(userId).get();
+		return transactionUtil.filterTransactionsOfEwalletHistory(transactionRepository.findBySenderOrReceiverOrderByAmountDesc(user, user));
 	}
 	
 	/**
@@ -275,17 +255,12 @@ public class TransactionService implements ITransactionService {
 	 * himself to himself for a given <code>User</code>. This correspond to e-wallet
 	 * credits and debits.
 	 * 
-	 * @return A <code>Transaction</code> list OR <code>null</code> if
-	 *         <code>User</code> doesn't exist in the database.
+	 * @return A <code>Transaction</code> list.
 	 */
 	@Override
 	public List<Transaction> getTransactionsFromEwallet(int userId) {
-		if(userRepository.findById(userId).isPresent()) {
-			User user = userRepository.findById(userId).get();
-			return transactionRepository.findBySenderAndReceiverOrderByIdDesc(user, user);
-		}
-		
-		return null;
+		User user = userRepository.findById(userId).get();
+		return transactionRepository.findBySenderAndReceiverOrderByIdDesc(user, user);
 	}
 	
 	/**

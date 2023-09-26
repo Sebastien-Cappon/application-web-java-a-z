@@ -30,44 +30,35 @@ public class BuddyService implements IBuddyService {
 	@Autowired
 	private UserRepository userRepository;
 
-	public List<Buddy> getBuddies() {
-		return buddyRepository.findAll();
-	}
-
 	/**
 	 * A <code>GET</code> method that returns a list of <code>User</code>s in the
 	 * friend list of the active <code>User</code> whose id is passed as a
 	 * parameter. It calls the <code>CrudRepository</code> <code>add()</code>
 	 * method.
 	 * 
-	 * @return A <code>User</code> list OR <code>null</code> if the active user
-	 *         doesn't exist in the database.
+	 * @return A <code>User</code> list.
 	 */
 	@Override
 	public List<User> getBuddiesByUser(int userId) {
-		if (userRepository.findById(userId).isPresent()) {
-			List<User> myBuddyList = new ArrayList<>();
-			TreeMap<String, Integer> buddies = new TreeMap<>();
+		List<User> myBuddyList = new ArrayList<>();
+		TreeMap<String, Integer> buddies = new TreeMap<>();
 
-			for (Buddy buddy : buddyRepository.getBuddiesByUser(userId)) {
-				if (buddy.getId().getFirstUser().getId() != userId) {
-					String buddyName = buddy.getId().getFirstUser().getFirstname() + buddy.getId().getFirstUser().getLastname();
-					buddies.put(buddyName, buddy.getId().getFirstUser().getId());
-				} else {
-					String buddyName = buddy.getId().getSecondUser().getFirstname() + buddy.getId().getSecondUser().getLastname();
-					buddies.put(buddyName, buddy.getId().getSecondUser().getId());
-				}
+		for (Buddy buddy : buddyRepository.getBuddiesByUser(userId)) {
+			if (buddy.getId().getFirstUser().getId() != userId) {
+				String buddyName = buddy.getId().getFirstUser().getFirstname() + buddy.getId().getFirstUser().getLastname();
+				buddies.put(buddyName, buddy.getId().getFirstUser().getId());
+			} else {
+				String buddyName = buddy.getId().getSecondUser().getFirstname() + buddy.getId().getSecondUser().getLastname();
+				buddies.put(buddyName, buddy.getId().getSecondUser().getId());
 			}
-
-			Set<String> keys = buddies.keySet();
-			for (String key : keys) {
-				myBuddyList.add(userRepository.findById(buddies.get(key)).get());
-			}
-
-			return myBuddyList;
 		}
 
-		return null;
+		Set<String> keys = buddies.keySet();
+		for (String key : keys) {
+			myBuddyList.add(userRepository.findById(buddies.get(key)).get());
+		}
+
+		return myBuddyList;
 	}
 
 	/**
@@ -76,36 +67,31 @@ public class BuddyService implements IBuddyService {
 	 * <code>User</code> whose id is passed as a parameter. It calls the <code>CrudRepository</code> <code>add()</code>
 	 * method.
 	 * 
-	 * @return A <code>User</code> list OR <code>null</code> if the active user
-	 *         doesn't exist in the database.
+	 * @return A <code>User</code> list.
 	 */
 	@Override
 	public List<User> getActiveBuddiesByUser(int userId) {
-		if (userRepository.findById(userId).isPresent()) {
-			List<User> myBuddyList = new ArrayList<>();
-			TreeMap<String, Integer> buddies = new TreeMap<>();
+		List<User> myBuddyList = new ArrayList<>();
+		TreeMap<String, Integer> buddies = new TreeMap<>();
 
-			for (Buddy buddy : buddyRepository.getBuddiesByUser(userId)) {
-				if (buddy.getId().getFirstUser().isActive() && buddy.getId().getSecondUser().isActive()) {
-					if (buddy.getId().getFirstUser().getId() != userId) {
-						String buddyName = buddy.getId().getFirstUser().getFirstname() + buddy.getId().getFirstUser().getLastname();
-						buddies.put(buddyName, buddy.getId().getFirstUser().getId());
-					} else {
-						String buddyName = buddy.getId().getSecondUser().getFirstname() + buddy.getId().getSecondUser().getLastname();
-						buddies.put(buddyName, buddy.getId().getSecondUser().getId());
-					}
+		for (Buddy buddy : buddyRepository.getBuddiesByUser(userId)) {
+			if (buddy.getId().getFirstUser().isActive() && buddy.getId().getSecondUser().isActive()) {
+				if (buddy.getId().getFirstUser().getId() != userId) {
+					String buddyName = buddy.getId().getFirstUser().getFirstname() + buddy.getId().getFirstUser().getLastname();
+					buddies.put(buddyName, buddy.getId().getFirstUser().getId());
+				} else {
+					String buddyName = buddy.getId().getSecondUser().getFirstname() + buddy.getId().getSecondUser().getLastname();
+					buddies.put(buddyName, buddy.getId().getSecondUser().getId());
 				}
 			}
-
-			Set<String> keys = buddies.keySet();
-			for (String key : keys) {
-				myBuddyList.add(userRepository.findById(buddies.get(key)).get());
-			}
-
-			return myBuddyList;
 		}
 
-		return null;
+		Set<String> keys = buddies.keySet();
+		for (String key : keys) {
+			myBuddyList.add(userRepository.findById(buddies.get(key)).get());
+		}
+
+		return myBuddyList;
 	}
 
 	/**

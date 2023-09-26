@@ -181,7 +181,7 @@ public class UserService implements IUserService {
 		if(userRepository.findById(userId).isPresent()) {
 			User user = userRepository.findById(userId).get();
 			
-			if(user.isActive()) {
+			if(user.isActive() && !isActive) {
 				Transaction lastTransaction = new Transaction();
 				lastTransaction.setDate(LocalDate.now());
 				lastTransaction.setSender(user);

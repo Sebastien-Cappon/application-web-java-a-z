@@ -22,6 +22,18 @@ public class InstanceBuilder {
 		return transaction;
 	}
 	
+	public static Transaction createItTransaction(LocalDate date, User sender, User receiver, double amount, double fee, String description) {
+		Transaction transaction = new Transaction();
+		transaction.setDate(date);
+		transaction.setSender(sender);
+		transaction.setReceiver(receiver);
+		transaction.setAmount(amount);
+		transaction.setFee(fee);
+		transaction.setDescription(description);
+
+		return transaction;
+	}
+
 	public static User createUser(int id, String firstname, String lastName, String email, String password, double amount, boolean active) {
 		User user = new User();
 		user.setId(id);
@@ -35,6 +47,18 @@ public class InstanceBuilder {
 		return user;
 	}
 	
+	public static User createItUser(String firstname, String lastName, String email, String password, double amount, boolean active) {
+		User user = new User();
+		user.setFirstname(firstname);
+		user.setLastname(lastName);
+		user.setEmail(email);
+		user.setPassword(password);
+		user.setAmount(amount);
+		user.setActive(active);
+		
+		return user;
+	}
+		
 	public static BuddyKey createBuddyKey(User firstUser, User SecondUser) {
 		BuddyKey buddyKey = new BuddyKey();
 		buddyKey.setFirstUser(firstUser);

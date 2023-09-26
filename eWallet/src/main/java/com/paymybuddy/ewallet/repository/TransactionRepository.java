@@ -1,6 +1,7 @@
 package com.paymybuddy.ewallet.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,11 +18,17 @@ import jakarta.transaction.Transactional;
  * Repository in order to deal with Derived and JPQL query relative to
  * <code>Transaction</code> entities.
  * 
+ * @singularity Method <code>findBySender</code> is created for integration
+ *              tests purpose only. That's why it's Optional, not List. We're
+ *              sure that only one entity will be returned.
+ * 
  * @author Sébastien Cappon
  * @version 1.0
  */
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
 
+	Optional<Transaction> findBySender(User sender);
+	
 	List<Transaction> findByOrderByDateAsc();
 	List<Transaction> findByOrderByDateDesc();
 	List<Transaction> findByOrderByAmountAsc();

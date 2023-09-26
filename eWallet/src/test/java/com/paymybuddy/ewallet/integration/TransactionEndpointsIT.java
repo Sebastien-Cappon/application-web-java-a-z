@@ -18,7 +18,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymybuddy.ewallet.dto.EwalletTransactionAddDto;
 import com.paymybuddy.ewallet.dto.TransactionAddDto;
 import com.paymybuddy.ewallet.dto.UserTransactionDto;
+import com.paymybuddy.ewallet.model.Transaction;
+import com.paymybuddy.ewallet.model.User;
+import com.paymybuddy.ewallet.repository.TransactionRepository;
+import com.paymybuddy.ewallet.repository.UserRepository;
+import com.paymybuddy.ewallet.service.ITransactionService;
+import com.paymybuddy.ewallet.service.IUserService;
 import com.paymybuddy.ewallet.utils.DtoInstanceBuilder;
+import com.paymybuddy.ewallet.utils.InstanceBuilder;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -26,12 +33,26 @@ public class TransactionEndpointsIT {
 	
 	@Autowired
 	ObjectMapper objectMapper;
-
 	@Autowired
 	MockMvc mockMvc;
+	
+	@Autowired
+	IUserService iUserService;
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	ITransactionService iTransactionService;
+	@Autowired
+	TransactionRepository transactionRepository;
+	
 
 	@Test
 	public void getTransactions_shouldReturnOk() throws Exception {
+		User testSender = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		User testReceiver = iUserService.addUser(InstanceBuilder.createItUser("Gianna", "D'Antonio", "gianna.dantonio@testuser.874", "S4nt1n05ist3r", 50, true));
+		UserTransactionDto testReceiverDto = DtoInstanceBuilder.createUserTransactionDto(testReceiver.getId(), testReceiver.getFirstname(), testReceiver.getLastname(), testReceiver.getEmail(), testReceiver.isActive());
+		Transaction testTransaction = iTransactionService.addTransaction(DtoInstanceBuilder.createTransactionAddDto(testSender.getId(), testReceiverDto, 20, "Test transaction"));
+		
 		mockMvc.perform(get("/transactions")
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -45,6 +66,10 @@ public class TransactionEndpointsIT {
 			.andExpect(jsonPath("$.[*].amount").isNotEmpty())
 			.andExpect(jsonPath("$.[*].fee").isNotEmpty())
 			.andExpect(jsonPath("$.[*].description").isNotEmpty());
+		
+		transactionRepository.delete(testTransaction);
+		userRepository.delete(testSender);
+		userRepository.delete(testReceiver);
 	}
 
 	@Test
@@ -137,7 +162,12 @@ public class TransactionEndpointsIT {
 
 	@Test
 	public void getTransactionsByUser_shouldReturnOk() throws Exception {
-		mockMvc.perform(get("/history/{id}", "1")
+		User testSender = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		User testReceiver = iUserService.addUser(InstanceBuilder.createItUser("Gianna", "D'Antonio", "gianna.dantonio@testuser.874", "S4nt1n05ist3r", 50, true));
+		UserTransactionDto testReceiverDto = DtoInstanceBuilder.createUserTransactionDto(testReceiver.getId(), testReceiver.getFirstname(), testReceiver.getLastname(), testReceiver.getEmail(), testReceiver.isActive());
+		Transaction testTransaction = iTransactionService.addTransaction(DtoInstanceBuilder.createTransactionAddDto(testSender.getId(), testReceiverDto, 20, "Test transaction"));
+		
+		mockMvc.perform(get("/history/{id}", String.valueOf(testSender.getId()))
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.[*].date").isNotEmpty())
@@ -150,77 +180,109 @@ public class TransactionEndpointsIT {
 			.andExpect(jsonPath("$.[*].amount").isNotEmpty())
 			.andExpect(jsonPath("$.[*].fee").isNotEmpty())
 			.andExpect(jsonPath("$.[*].description").isNotEmpty());
+		
+		transactionRepository.delete(testTransaction);
+		userRepository.delete(testSender);
+		userRepository.delete(testReceiver);
 	}
 
 	@Test
 	public void getTransactionsByUser_orderByDateAsc_shouldReturnOk() throws Exception {
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "date");
 		sortByAndOrderParams.add("order", "asc");
 
-		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+		mockMvc.perform(get("/history/{id}", testUser.getId()).params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testUser);
 	}
 
 	@Test
 	public void getTransactionsByUser_orderByDateDesc_shouldReturnOk() throws Exception {
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "date");
 		sortByAndOrderParams.add("order", "desc");
 
-		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+		mockMvc.perform(get("/history/{id}", testUser.getId()).params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testUser);
 	}
 
 	@Test
 	public void getTransactionsByUser_orderByAmountAsc_shouldReturnOk() throws Exception {
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "amount");
 		sortByAndOrderParams.add("order", "asc");
 
-		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+		mockMvc.perform(get("/history/{id}", testUser.getId()).params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testUser);
 	}
 
 	@Test
 	public void getTransactionsByUser_orderByAmountDesc_shouldReturnOk() throws Exception {
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "amount");
 		sortByAndOrderParams.add("order", "desc");
 
-		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+		mockMvc.perform(get("/history/{id}", testUser.getId()).params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testUser);
 	}
 
 	@Test
 	public void getTransactionsByUser_orderByBuddyNameAsc_shouldReturnOk() throws Exception {
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "buddy");
 		sortByAndOrderParams.add("order", "asc");
 
-		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+		mockMvc.perform(get("/history/{id}", testUser.getId()).params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testUser);
 	}
 
 	@Test
 	public void getTransactionsByUser_orderByBuddyNameDesc_shouldReturnOk() throws Exception {
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "buddy");
 		sortByAndOrderParams.add("order", "desc");
 
-		mockMvc.perform(get("/history/{id}", "1").params(sortByAndOrderParams)
+		mockMvc.perform(get("/history/{id}", testUser.getId()).params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testUser);
 	}
 
 	@Test
 	public void getTransactionsFromEwallet_shouldReturnOk() throws Exception {
-		mockMvc.perform(get("/history/ewallet/{id}", "1")
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		EwalletTransactionAddDto testEwalletTransaction = DtoInstanceBuilder.createEwalletTransactionAddDto(testUser.getId(), 10);
+		Transaction testTransaction = iTransactionService.addEwalletTransaction(testEwalletTransaction);
+		
+		mockMvc.perform(get("/history/ewallet/{id}", String.valueOf(testUser.getId()))
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.[*].date").isNotEmpty())
@@ -233,11 +295,19 @@ public class TransactionEndpointsIT {
 			.andExpect(jsonPath("$.[*].amount").isNotEmpty())
 			.andExpect(jsonPath("$.[*].fee").isNotEmpty())
 			.andExpect(jsonPath("$.[*].description").isNotEmpty());
+		
+		transactionRepository.delete(testTransaction);
+		userRepository.delete(testUser);
 	}
 
 	@Test
 	public void getTransactionsBetweenUsers_shouldReturnOk() throws Exception {
-		mockMvc.perform(get("/history/between/{userId}-{buddyId}", "1", "2")
+		User testSender = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		User testReceiver = iUserService.addUser(InstanceBuilder.createItUser("Gianna", "D'Antonio", "gianna.dantonio@testuser.874", "S4nt1n05ist3r", 50, true));
+		UserTransactionDto testReceiverDto = DtoInstanceBuilder.createUserTransactionDto(testReceiver.getId(), testReceiver.getFirstname(), testReceiver.getLastname(), testReceiver.getEmail(), testReceiver.isActive());
+		Transaction testTransaction = iTransactionService.addTransaction(DtoInstanceBuilder.createTransactionAddDto(testSender.getId(), testReceiverDto, 20, "Test transaction"));
+
+		mockMvc.perform(get("/history/between/{userId}-{buddyId}", String.valueOf(testSender.getId()), String.valueOf(testReceiver.getId()))
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.[*].date").isNotEmpty())
@@ -250,67 +320,99 @@ public class TransactionEndpointsIT {
 			.andExpect(jsonPath("$.[*].amount").isNotEmpty())
 			.andExpect(jsonPath("$.[*].fee").isNotEmpty())
 			.andExpect(jsonPath("$.[*].description").isNotEmpty());
+		
+		transactionRepository.delete(testTransaction);
+		userRepository.delete(testSender);
+		userRepository.delete(testReceiver);
 	}
 
 	@Test
 	public void getTransactionsBetweenUsers_orderByDateAsc_shouldReturnOk() throws Exception {
+		User testSender = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		User testReceiver = iUserService.addUser(InstanceBuilder.createItUser("Gianna", "D'Antonio", "gianna.dantonio@testuser.874", "S4nt1n05ist3r", 50, true));
+		
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "date");
 		sortByAndOrderParams.add("order", "asc");
 
-		mockMvc.perform(get("/history/between/{userId}-{buddyId}", "1", "2").params(sortByAndOrderParams)
+		mockMvc.perform(get("/history/between/{userId}-{buddyId}", testSender.getId(), testReceiver.getId()).params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testSender);
+		userRepository.delete(testReceiver);
 	}
 
 	@Test
 	public void getTransactionsBetweenUsers_orderByDateDesc_shouldReturnOk() throws Exception {
+		User testSender = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		User testReceiver = iUserService.addUser(InstanceBuilder.createItUser("Gianna", "D'Antonio", "gianna.dantonio@testuser.874", "S4nt1n05ist3r", 50, true));
+		
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "date");
 		sortByAndOrderParams.add("order", "desc");
 
-		mockMvc.perform(get("/history/between/{userId}-{buddyId}", "1", "2").params(sortByAndOrderParams)
+		mockMvc.perform(get("/history/between/{userId}-{buddyId}", testSender.getId(), testReceiver.getId()).params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testSender);
+		userRepository.delete(testReceiver);
 	}
 
 	@Test
 	public void getTransactionsBetweenUsers_orderByAmountAsc_shouldReturnOk() throws Exception {
+		User testSender = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		User testReceiver = iUserService.addUser(InstanceBuilder.createItUser("Gianna", "D'Antonio", "gianna.dantonio@testuser.874", "S4nt1n05ist3r", 50, true));
+		
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "amount");
 		sortByAndOrderParams.add("order", "asc");
 
-		mockMvc.perform(get("/history/between/{userId}-{buddyId}", "1", "2").params(sortByAndOrderParams)
+		mockMvc.perform(get("/history/between/{userId}-{buddyId}", testSender.getId(), testReceiver.getId()).params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testSender);
+		userRepository.delete(testReceiver);
 	}
 
 	@Test
 	public void getTransactionsBetweenUsers_orderByAmountDesc_shouldReturnOk() throws Exception {
+		User testSender = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		User testReceiver = iUserService.addUser(InstanceBuilder.createItUser("Gianna", "D'Antonio", "gianna.dantonio@testuser.874", "S4nt1n05ist3r", 50, true));
+		
 		MultiValueMap<String, String> sortByAndOrderParams = new LinkedMultiValueMap<>();
 		sortByAndOrderParams.add("sortBy", "amount");
 		sortByAndOrderParams.add("order", "desc");
 
-		mockMvc.perform(get("/history/between/{userId}-{buddyId}", "1", "2").params(sortByAndOrderParams)
+		mockMvc.perform(get("/history/between/{userId}-{buddyId}", testSender.getId(), testReceiver.getId()).params(sortByAndOrderParams)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testSender);
+		userRepository.delete(testReceiver);
 	}
 
 	@Test
 	public void addEwalletTransaction_shouldReturnCreated() throws Exception {
-		EwalletTransactionAddDto requestBody = DtoInstanceBuilder.createEwalletTransactionAddDto(1, 29.99);
-		
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		EwalletTransactionAddDto requestBody = DtoInstanceBuilder.createEwalletTransactionAddDto(testUser.getId(), 10);
+
 		mockMvc.perform(post("/ewallet")
 				.content(objectMapper.writeValueAsString(requestBody))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.date").isNotEmpty())
-			.andExpect(jsonPath("$.sender.id").value("1"))
-			.andExpect(jsonPath("$.receiver.id").value("1"))
-			.andExpect(jsonPath("$.amount").value(29.99))
+			.andExpect(jsonPath("$.sender.id").value(testUser.getId()))
+			.andExpect(jsonPath("$.receiver.id").value(testUser.getId()))
+			.andExpect(jsonPath("$.amount").value(10))
 			.andExpect(jsonPath("$.fee").value(0))
 			.andExpect(jsonPath("$.description").value("You have credit your account."));
+		
+		transactionRepository.delete(transactionRepository.findBySender(testUser).get());
+		userRepository.delete(testUser);
 	}
 
 	@Test
@@ -324,8 +426,10 @@ public class TransactionEndpointsIT {
 
 	@Test
 	public void addTransaction_shouldReturnCreated() throws Exception {
-		UserTransactionDto receiver = DtoInstanceBuilder.createUserTransactionDto(2, "Winston", "Scott", "winston.scott@continental.ny", true);
-		TransactionAddDto requestBody = DtoInstanceBuilder.createTransactionAddDto(1, receiver, 14.50, "Refunds. Thanks for the help !");
+		User testSender = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 50, true));
+		User testReceiver = iUserService.addUser(InstanceBuilder.createItUser("Gianna", "D'Antonio", "gianna.dantonio@testuser.874", "S4nt1n05ist3r", 50, true));
+		UserTransactionDto testReceiverDto = DtoInstanceBuilder.createUserTransactionDto(testReceiver.getId(), testReceiver.getFirstname(), testReceiver.getLastname(), testReceiver.getEmail(), testReceiver.isActive());
+		TransactionAddDto requestBody = DtoInstanceBuilder.createTransactionAddDto(testSender.getId(), testReceiverDto, 20, "Test transaction");
 		
 		mockMvc.perform(post("/transaction")
 				.content(objectMapper.writeValueAsString(requestBody))
@@ -333,11 +437,15 @@ public class TransactionEndpointsIT {
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.date").isNotEmpty())
-			.andExpect(jsonPath("$.sender.id").value("1"))
-			.andExpect(jsonPath("$.receiver.id").value("2"))
-			.andExpect(jsonPath("$.amount").value(14.50))
-			.andExpect(jsonPath("$.fee").value(0.07))
-			.andExpect(jsonPath("$.description").value("Refunds. Thanks for the help !"));
+			.andExpect(jsonPath("$.sender.id").value(testSender.getId()))
+			.andExpect(jsonPath("$.receiver.id").value(testReceiver.getId()))
+			.andExpect(jsonPath("$.amount").value(20))
+			.andExpect(jsonPath("$.fee").value(0.1))
+			.andExpect(jsonPath("$.description").value("Test transaction"));
+		
+		transactionRepository.delete(transactionRepository.findBySender(testSender).get());
+		userRepository.delete(testSender);
+		userRepository.delete(testReceiver);
 	}
 
 	@Test

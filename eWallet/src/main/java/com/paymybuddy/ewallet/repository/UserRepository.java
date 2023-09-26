@@ -17,11 +17,16 @@ import jakarta.transaction.Transactional;
  * Repository in order to deal with Derived and JPQL query relative to
  * <code>User</code> entities.
  * 
+ * @singularity Method <code>deleteByEmail</code> is created for integration
+ *              tests purpose only.
+ * 
  * @author Sébastien Cappon
  * @version 1.0
  */
 public interface UserRepository extends JpaRepository<User, Integer> {
-
+	
+	Optional<User> findByEmail(String email);
+	
 	List<User> findByOrderByEmailAsc();
 	List<User> findByOrderByEmailDesc();
 	List<User> findByOrderByAmountAsc();
@@ -32,8 +37,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Query(value = MySqlQueries.allUser_orderByNameDesc, nativeQuery = true)
 	List<User> getUsers_orderByNameDesc();
 
-	Optional<User> findByEmail(String email);
-	
 	@Transactional
 	@Modifying
 	@Query(value = MySqlQueries.updateProfileById, nativeQuery = true)
@@ -46,4 +49,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	@Modifying
 	@Query(value = MySqlQueries.updateAmountById, nativeQuery = true)
 	Integer updateAmount(int id, double amount);
+	
+	void deleteByEmail(String email);
 }

@@ -17,6 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paymybuddy.ewallet.dto.UserLoginDto;
 import com.paymybuddy.ewallet.dto.UserProfileDto;
 import com.paymybuddy.ewallet.model.User;
+import com.paymybuddy.ewallet.repository.TransactionRepository;
+import com.paymybuddy.ewallet.repository.UserRepository;
+import com.paymybuddy.ewallet.service.ITransactionService;
+import com.paymybuddy.ewallet.service.IUserService;
 import com.paymybuddy.ewallet.utils.DtoInstanceBuilder;
 import com.paymybuddy.ewallet.utils.InstanceBuilder;
 
@@ -26,56 +30,80 @@ public class UserEndpointsIT {
 	
 	@Autowired
 	ObjectMapper objectMapper;
-	
 	@Autowired
 	MockMvc mockMvc;
+	
+	@Autowired
+	IUserService iUserService;
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	ITransactionService iTransactionService;
+	@Autowired
+	TransactionRepository transactionRepository;
+	
 
 	@Test
 	public void getUserById_forLoginPage_shouldReturnOk() throws Exception {
-		mockMvc.perform(get("/users/login/{id}", "1")
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 0, true));
+		
+		mockMvc.perform(get("/users/login/{id}", String.valueOf(testUser.getId()))
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(1))
-			.andExpect(jsonPath("$.firstname").value("John"))
-			.andExpect(jsonPath("$.lastname").value("Wick"));
+			.andExpect(jsonPath("$.id").value(testUser.getId()))
+			.andExpect(jsonPath("$.firstname").value("Santino"))
+			.andExpect(jsonPath("$.lastname").value("D'Antonio"));
+		
+		userRepository.delete(testUser);
 	}
 
 	@Test
 	public void getUserById_forProfilePage_shouldReturnOk() throws Exception {
-		mockMvc.perform(get("/users/profile/{id}", "2")
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 0, true));
+		
+		mockMvc.perform(get("/users/profile/{id}", String.valueOf(testUser.getId()))
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.firstname").value("Winston"))
-			.andExpect(jsonPath("$.lastname").value("Scott"))
-			.andExpect(jsonPath("$.email").value("winston.scott@continental.ny"));
+			.andExpect(jsonPath("$.firstname").value("Santino"))
+			.andExpect(jsonPath("$.lastname").value("D'Antonio"))
+			.andExpect(jsonPath("$.email").value("santino.dantonio@testuser.874"));
+		
+		userRepository.delete(testUser);
 	}
 
 	@Test
 	public void getUserById_forHomePage_shouldReturnOk() throws Exception {
-		mockMvc.perform(get("/users/amount/{id}", "1")
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 0, true));
+		
+		mockMvc.perform(get("/users/amount/{id}", String.valueOf(testUser.getId()))
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value("1"))
-			.andExpect(jsonPath("$.amount").isNotEmpty());
+			.andExpect(jsonPath("$.id").value(testUser.getId()))
+			.andExpect(jsonPath("$.amount").value(0));
+		
+		userRepository.delete(testUser);
 	}
-
+	
 	@Test
 	public void postUserByEmailAndPassword_shouldReturnOk() throws Exception {
-		UserLoginDto requestBody = DtoInstanceBuilder.createUserLoginDto("abram.tarasov@tarasov.mob", "IamSt177@liv3");
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 0, true));
+		UserLoginDto requestBody = DtoInstanceBuilder.createUserLoginDto("santino.dantonio@testuser.874", "G14nn4sBr0th3r");
 		
 		mockMvc.perform(post("/login")
 				.content(objectMapper.writeValueAsString(requestBody))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(54))
-			.andExpect(jsonPath("$.firstname").value("Abram"))
-			.andExpect(jsonPath("$.lastname").value("Tarasov"));
+			.andExpect(jsonPath("$.id").value(testUser.getId()))
+			.andExpect(jsonPath("$.firstname").value("Santino"))
+			.andExpect(jsonPath("$.lastname").value("D'Antonio"));
+
+		userRepository.delete(testUser);
 	}
 
 	@Test
 	public void postUserByEmailAndPassword_shouldThrowBadRequest() throws Exception {
-		UserLoginDto requestBody = DtoInstanceBuilder.createUserLoginDto("abram.tarasov@tarasov.mob", "J'ai oublié");
+		UserLoginDto requestBody = DtoInstanceBuilder.createUserLoginDto("santino.dantonio@testuser.874", "DoesntExist");
 		
 		mockMvc.perform(post("/login")
 				.content(objectMapper.writeValueAsString(requestBody))
@@ -83,18 +111,36 @@ public class UserEndpointsIT {
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest());
 	}
-
+	
 	@Test
 	public void addUser_shouldReturnCreated() throws Exception {
-		User requestBody = InstanceBuilder.createUser(9999, "Santino", "D'Antonio", "santino.dantonio@camorra.tbl", "G14nn4sBro7h3r", 0, true);
+		User testUser = InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 0, true);
 		
 		mockMvc.perform(post("/user")
-				.content(objectMapper.writeValueAsString(requestBody))
+				.content(objectMapper.writeValueAsString(testUser))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.id").isNotEmpty())
 			.andExpect(jsonPath("$.amount").value(0));
+
+		userRepository.delete(userRepository.findByEmail("santino.dantonio@testuser.874").get());
+	}
+	
+	@Test
+	public void addUser_reactivate_shouldReturnCreated() throws Exception {
+		iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 0, false));
+		User testUser = InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "aFr35hNewP455word", 0, true);
+		
+		mockMvc.perform(post("/user")
+				.content(objectMapper.writeValueAsString(testUser))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.id").isNotEmpty())
+			.andExpect(jsonPath("$.amount").value(0));
+
+		userRepository.delete(userRepository.findByEmail("santino.dantonio@testuser.874").get());
 	}
 
 	@Test
@@ -105,16 +151,19 @@ public class UserEndpointsIT {
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isBadRequest());
 	}
-
+	
 	@Test
 	public void updateProfile_shouldReturnOk() throws Exception {
-		UserProfileDto requestBody = DtoInstanceBuilder.createUserProfileDto("John", "Wick", "john.wick@runaway.run", "iMu5tFl33");
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 0, true));
+		UserProfileDto requestBody = DtoInstanceBuilder.createUserProfileDto("", "", "", "");
 		
-		mockMvc.perform(put("/users/{id}/profile", "1")
+		mockMvc.perform(put("/users/{id}/profile", String.valueOf(testUser.getId()))
 				.content(objectMapper.writeValueAsString(requestBody))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testUser);
 	}
 
 	@Test
@@ -129,12 +178,30 @@ public class UserEndpointsIT {
 	}
 
 	@Test
-	public void updateActive_shouldReturnOk() throws Exception {
-		mockMvc.perform(put("/users/{id}/active", "1")
+	public void updateActive_turnInactive_shouldReturnOk() throws Exception {
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 0, true));
+		
+		mockMvc.perform(put("/users/{id}/active", String.valueOf(testUser.getId()))
+				.content(objectMapper.writeValueAsString(0))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+		
+		transactionRepository.delete(transactionRepository.findBySender(testUser).get());
+		userRepository.delete(testUser);
+	}
+	
+	@Test
+	public void updateActive_turnActive_shouldReturnOk() throws Exception {
+		User testUser = iUserService.addUser(InstanceBuilder.createItUser("Santino", "D'Antonio", "santino.dantonio@testuser.874", "G14nn4sBr0th3r", 0, true));
+		
+		mockMvc.perform(put("/users/{id}/active", String.valueOf(testUser.getId()))
 				.content(objectMapper.writeValueAsString(1))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk());
+		
+		userRepository.delete(testUser);
 	}
 
 	@Test

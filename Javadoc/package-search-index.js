@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.paymybuddy.ewallet.config"},{"l":"com.paymybuddy.ewallet.constants"},{"l":"com.paymybuddy.ewallet.logger"},{"l":"com.paymybuddy.ewallet.repository"},{"l":"com.paymybuddy.ewallet.service"},{"l":"com.paymybuddy.ewallet.views"}];updateSearchResults();
