@@ -15,7 +15,7 @@ import java.util.List;
  * @version 1.0
  */
 public class UriToIgnore {
+	
 	public static final String errorURI = "/error";
-
 	public static final List<String> uriToIgnore = new ArrayList<>(Arrays.asList(errorURI));
 }

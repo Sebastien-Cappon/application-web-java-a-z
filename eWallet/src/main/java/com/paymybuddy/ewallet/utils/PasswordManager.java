@@ -26,7 +26,7 @@ public class PasswordManager {
 	 *
 	 * @return A <code>byte</code> array.
 	 */
-	public byte[] getSalt() throws NoSuchAlgorithmException {
+	public static byte[] getSalt() throws NoSuchAlgorithmException {
 		SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
 		byte[] salt = new byte[16];
 		secureRandom.nextBytes(salt);
@@ -75,7 +75,7 @@ public class PasswordManager {
 	 *
 	 * @return A <code>String</code>.
 	 */
-	public String hashPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public static String hashPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		int iterations = 1000;
 		byte[] salt = getSalt();
 
@@ -91,7 +91,7 @@ public class PasswordManager {
 	 * This method splits password retrieved from database using colons as separators
 	 * to recover the iterations, the salt and the encrypted password. It then
 	 * encrypts the password passed as first parameter, juxtaposes the recovered
-	 * salt and the iteration and compares the recult byte by byte with the password
+	 * salt and the iteration and compares the result byte by byte with the password
 	 * stored in the database (second parameter).
 	 *
 	 * @singularity <code>^</code> bitwise operator is an EOR. If two bytes are the
@@ -102,7 +102,7 @@ public class PasswordManager {
 	 *
 	 * @return A <code>boolean</code>.
 	 */
-	public boolean checkPassword(String passwordInput, String passwordStored) throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public static boolean checkPassword(String passwordInput, String passwordStored) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		String[] passwordStoredParts = passwordStored.split(":");
 
 		int passwordStoredIterations = Integer.parseInt(passwordStoredParts[0]);

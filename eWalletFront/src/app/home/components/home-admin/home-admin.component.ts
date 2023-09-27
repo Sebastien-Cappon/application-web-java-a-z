@@ -19,8 +19,9 @@ export class HomeAdminComponent {
 
   openAdminDialog() {
     this.dialog.open(AdminOverviewComponent, {
+      width: '600px',
       maxWidth: 'calc(100vw - 48px)',
-      maxHeight: 'calc(100vh - 48px)'
+      maxHeight: 'calc(100vh - 48px)',
     });
   }
 }

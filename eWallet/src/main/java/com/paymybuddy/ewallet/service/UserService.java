@@ -31,8 +31,6 @@ public class UserService implements IUserService {
 	private UserRepository userRepository;
 	@Autowired
 	private TransactionRepository transactionRepository;
-	@Autowired
-	private PasswordManager passwordManager;
 
 	/**
 	 * A <code>GET</code> method that returns a <code>User</code>s whose id is
@@ -70,7 +68,7 @@ public class UserService implements IUserService {
 				String inputPassword = userLoginDto.getPassword();
 				String userPassword = user.getPassword();
 	
-				if (passwordManager.checkPassword(inputPassword, userPassword)) {
+				if (PasswordManager.checkPassword(inputPassword, userPassword)) {
 					return user;
 				}
 			}
@@ -100,7 +98,7 @@ public class UserService implements IUserService {
 						logger.warn("A user with this email address already exists.");
 						return null;
 					} else {
-						String newPassword = passwordManager.hashPassword(user.getPassword());
+						String newPassword = PasswordManager.hashPassword(user.getPassword());
 						
 						userRepository.updateProfile(checkUser.getId(), checkUser.getFirstname(), checkUser.getLastname(), checkUser.getEmail(), newPassword);
 						userRepository.updateActive(checkUser.getId(), true);
@@ -110,7 +108,7 @@ public class UserService implements IUserService {
 				}
 			}
 	
-			String hashedPassword = passwordManager.hashPassword(user.getPassword());
+			String hashedPassword = PasswordManager.hashPassword(user.getPassword());
 			user.setPassword(hashedPassword);
 	
 			return userRepository.save(user);
@@ -153,7 +151,7 @@ public class UserService implements IUserService {
 			if (userProfileDto.getPassword() == null || userProfileDto.getPassword().isBlank()) {
 				userProfileDto.setPassword(userToUpdate.getPassword());
 			} else {
-				userProfileDto.setPassword(passwordManager.hashPassword(userProfileDto.getPassword()));
+				userProfileDto.setPassword(PasswordManager.hashPassword(userProfileDto.getPassword()));
 			}
 
 			userRepository.updateProfile(userId, userProfileDto.getFirstname(), userProfileDto.getLastname(), userProfileDto.getEmail(), userProfileDto.getPassword());

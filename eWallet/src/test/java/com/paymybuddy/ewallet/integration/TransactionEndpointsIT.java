@@ -32,18 +32,18 @@ import com.paymybuddy.ewallet.utils.InstanceBuilder;
 public class TransactionEndpointsIT {
 	
 	@Autowired
-	ObjectMapper objectMapper;
+	private ObjectMapper objectMapper;
 	@Autowired
-	MockMvc mockMvc;
+	private MockMvc mockMvc;
 	
 	@Autowired
-	IUserService iUserService;
+	private IUserService iUserService;
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	@Autowired
-	ITransactionService iTransactionService;
+	private ITransactionService iTransactionService;
 	@Autowired
-	TransactionRepository transactionRepository;
+	private TransactionRepository transactionRepository;
 	
 
 	@Test

@@ -27,16 +27,16 @@ import com.paymybuddy.ewallet.utils.InstanceBuilder;
 public class BuddyEndpointsIT {
 
 	@Autowired
-	ObjectMapper objectMapper;
+	private ObjectMapper objectMapper;
 	@Autowired
-	MockMvc mockMvc;
+	private MockMvc mockMvc;
 	
 	@Autowired
-	IUserService iUserService;
+	private IUserService iUserService;
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	@Autowired
-	IBuddyService iBuddyService;
+	private IBuddyService iBuddyService;
 
 	@Test
 	public void getBuddiesByUser_shouldReturnOk() throws Exception {

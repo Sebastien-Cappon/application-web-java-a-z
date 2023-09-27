@@ -33,11 +33,11 @@ public class BuddyControllerTest {
 	private List<User> userResponseList = new ArrayList<>(List.of(userResponse, userResponse, userResponse));
 
 	@Autowired
-	ObjectMapper objectMapper;
+	private ObjectMapper objectMapper;
 	@Autowired
-	MockMvc mockMvc;
+	private MockMvc mockMvc;
 	@MockBean
-	BuddyService buddyService;
+	private BuddyService buddyService;
 
 	@Test
 	public void getBuddiesByUser_shouldReturnOk() throws Exception {

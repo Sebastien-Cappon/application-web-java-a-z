@@ -19,7 +19,6 @@ import com.paymybuddy.ewallet.dto.UserProfileDto;
 import com.paymybuddy.ewallet.model.User;
 import com.paymybuddy.ewallet.repository.TransactionRepository;
 import com.paymybuddy.ewallet.repository.UserRepository;
-import com.paymybuddy.ewallet.service.ITransactionService;
 import com.paymybuddy.ewallet.service.IUserService;
 import com.paymybuddy.ewallet.utils.DtoInstanceBuilder;
 import com.paymybuddy.ewallet.utils.InstanceBuilder;
@@ -29,18 +28,16 @@ import com.paymybuddy.ewallet.utils.InstanceBuilder;
 public class UserEndpointsIT {
 	
 	@Autowired
-	ObjectMapper objectMapper;
+	private ObjectMapper objectMapper;
 	@Autowired
-	MockMvc mockMvc;
+	private MockMvc mockMvc;
 	
 	@Autowired
-	IUserService iUserService;
+	private IUserService iUserService;
 	@Autowired
-	UserRepository userRepository;
+	private UserRepository userRepository;
 	@Autowired
-	ITransactionService iTransactionService;
-	@Autowired
-	TransactionRepository transactionRepository;
+	private TransactionRepository transactionRepository;
 	
 
 	@Test

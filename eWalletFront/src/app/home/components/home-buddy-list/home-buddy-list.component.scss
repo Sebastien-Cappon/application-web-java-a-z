@@ -3,7 +3,7 @@ mat-card {
 }
 
 mat-list {
-    padding: 0;
+    padding: 0 0 16px 0;
 
     mat-list-item:nth-child(2n+1) {
         background-color: #e5f6fe;
@@ -31,8 +31,6 @@ mat-list {
 }
 
 mat-card-actions {
-    margin-top: 16px;
-
     a {
         display: inline-block;
         width: 150px;
