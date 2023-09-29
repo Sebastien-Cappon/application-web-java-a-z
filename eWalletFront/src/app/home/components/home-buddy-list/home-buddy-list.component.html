@@ -3,7 +3,7 @@
         <mat-card-title background-color="primary"><h2>Buddies</h2></mat-card-title>
     </mat-card-header>
     <mat-card-content>
-        <mat-list>
+        <mat-list *ngIf="buddies.length > 0">
             <mat-list-item *ngFor="let buddy of buddies | slice:0:4">
                 <p *ngIf="buddy.active">{{ buddy.firstname }} {{ buddy.lastname }}</p>
                 <p class="inactiveBuddy" *ngIf="!buddy.active"><span style="color: #f44336;">*</span> {{ buddy.firstname }} {{ buddy.lastname }} <i>(inactive)</i></p>
