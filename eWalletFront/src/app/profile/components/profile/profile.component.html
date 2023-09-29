@@ -42,7 +42,7 @@
                         <mat-form-field color="accent" style="margin-right: 8px;">
                             <mat-label>E-mail address</mat-label>
                             <input matInput type="text" [formControl]="profileEmailCtrl" placeholder="newemail@adress.com">
-                            <mat-error>{{ getProfileFormControlErrorText(profileEmailCtrl) }}</mat-error>
+                            <mat-error>Valid e-mail address required.</mat-error>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
@@ -65,13 +65,14 @@
                         <mat-form-field color="accent" style="margin-right: 8px;">
                             <mat-label>Password</mat-label>
                             <input matInput type="password" [formControl]="profilePasswordCtrl">
+                            <mat-error>8 chars : a-Z 0-9 !@#$%^&*</mat-error>
                         </mat-form-field>
                     </mat-grid-tile>
                     <mat-grid-tile>
                         <mat-form-field color="accent" style="margin-left: 8px;" *ngIf="showProfileConfirmPassword$ | async">
                             <mat-label>Password confirmation</mat-label>
                             <input matInput type="password" [formControl]="profileConfirmPasswordCtrl">
-                            <mat-error>Please confirm new password.</mat-error>
+                            <mat-error>{{ getProfileFormControlErrorText(profileConfirmPasswordCtrl) }}</mat-error>
                         </mat-form-field>
                     </mat-grid-tile>
                 </mat-grid-list>

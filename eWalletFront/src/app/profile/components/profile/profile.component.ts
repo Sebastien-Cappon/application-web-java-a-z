@@ -6,6 +6,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from
 import { confirmEqualsValidator } from 'src/app/shared/validators/confirmEquals.validator';
 import { emailPatternValidator } from 'src/app/shared/validators/emailPattern.validator';
 import { Router } from '@angular/router';
+import { passwordPatternValidator } from 'src/app/shared/validators/passwordPattern.validator';
 
 @Component({
   selector: 'app-profile',
@@ -74,7 +75,7 @@ export class ProfileComponent {
   }
 
   private initProfilePasswordFormControl() {
-    this.profilePasswordCtrl = this.formBuilder.control('');
+    this.profilePasswordCtrl = this.formBuilder.control('', [passwordPatternValidator()]);
     this.profileConfirmPasswordCtrl = this.formBuilder.control('');
     this.profilePasswordForm = this.formBuilder.group({
       password: this.profilePasswordCtrl,
@@ -121,6 +122,7 @@ export class ProfileComponent {
     this.showProfilePasswordError$ = this.profilePasswordForm.statusChanges.pipe(
       map(status => status === ('INVALID')
         && this.profilePasswordCtrl.value
+        && this.profilePasswordCtrl.valid
         && this.profileConfirmPasswordCtrl.value
         && this.profileConfirmPasswordCtrl.valid
       )
@@ -144,7 +146,10 @@ export class ProfileComponent {
 
   private setProfilePasswordValidators(showProfileConfirmPassword: boolean) {
     if (showProfileConfirmPassword) {
-      this.profileConfirmPasswordCtrl.addValidators([Validators.required]);
+      this.profileConfirmPasswordCtrl.addValidators([
+        Validators.required,
+        passwordPatternValidator()
+      ]);
       this.profileConfirmPasswordCtrl.markAsTouched();
     } else {
       this.profileConfirmPasswordCtrl.reset('');
@@ -158,6 +163,8 @@ export class ProfileComponent {
       return 'Please confirm previous input.';
     } else if (ctrl.hasError('email') || ctrl.hasError('emailPatternValidator')){
       return 'Valid e-mail address required.'
+    } else if (ctrl.hasError('passwordPatternValidator')) {
+      return '8 chars : a-Z 0-9 !@#$%^&*'
     } else {
       return 'An error has occured.';
     }

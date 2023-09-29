@@ -6,6 +6,7 @@ import { confirmEqualsValidator } from 'src/app/shared/validators/confirmEquals.
 import { emailPatternValidator } from 'src/app/shared/validators/emailPattern.validator';
 import { NewAccountService } from '../../services/new-account.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { passwordPatternValidator } from 'src/app/shared/validators/passwordPattern.validator';
 
 @Component({
   selector: 'app-new-account',
@@ -70,7 +71,7 @@ export class NewAccountComponent {
   }
 
   initNewAccountPasswordFormControl() {
-    this.newAccountPasswordCtrl = this.formBuilder.control('', Validators.required);
+    this.newAccountPasswordCtrl = this.formBuilder.control('', [Validators.required, passwordPatternValidator()]);
     this.newAccountConfirmPasswordCtrl = this.formBuilder.control('');
     this.newAccountPasswordForm = this.formBuilder.group({
       password: this.newAccountPasswordCtrl,
@@ -120,6 +121,7 @@ export class NewAccountComponent {
     this.showNewAccountPasswordError$ = this.newAccountPasswordForm.statusChanges.pipe(
       map(status => status === ('INVALID')
         && this.newAccountPasswordCtrl.value
+        && this.newAccountPasswordCtrl.valid
         && this.newAccountConfirmPasswordCtrl.value
         && this.newAccountConfirmPasswordCtrl.valid
       )
@@ -143,7 +145,10 @@ export class NewAccountComponent {
 
   setProfilePasswordValidators(showNewAccountConfirmPassword: boolean) {
     if (showNewAccountConfirmPassword) {
-      this.newAccountConfirmPasswordCtrl.addValidators([Validators.required]);
+      this.newAccountConfirmPasswordCtrl.addValidators([
+        Validators.required,
+        passwordPatternValidator()
+      ]);
       this.newAccountConfirmPasswordCtrl.markAsTouched();
     } else {
       this.newAccountConfirmPasswordCtrl.reset('');
@@ -157,6 +162,8 @@ export class NewAccountComponent {
       return 'Please confirm previous input.';
     } else if (ctrl.hasError('email') || ctrl.hasError('emailPatternValidator')){
       return 'Valid email address required.'
+    } else if (ctrl.hasError('passwordPatternValidator')) {
+      return '8 chars : a-Z 0-9 !@#$%^&*'
     } else {
       return 'An error has occured.';
     }
