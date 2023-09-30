@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -54,7 +53,6 @@ public class BuddyController {
 	 */
 	@JsonView(UserView.BuddyView.class)
 	@GetMapping("/mybuddies/{id}")
-	@ResponseBody
 	public List<User> getBuddiesByUser(@PathVariable("id") int userId) {
 		return iBuddyService.getBuddiesByUser(userId);
 	}
@@ -74,7 +72,6 @@ public class BuddyController {
 	 */
 	@JsonView(UserView.BuddyView.class)
 	@GetMapping("/mybuddies/active/{id}")
-	@ResponseBody
 	public List<User> getActiveBuddiesByUser(@PathVariable("id") int userId) {
 		return iBuddyService.getActiveBuddiesByUser(userId);
 	}
@@ -98,7 +95,6 @@ public class BuddyController {
 	 */
 	@JsonView(UserView.BuddyView.class)
 	@PostMapping("/buddy")
-	@ResponseBody
 	public ResponseEntity<User> addBuddy(@RequestBody BuddyAddDto buddyAddDto) {
 		User myNewBuddy = iBuddyService.addBuddy(buddyAddDto);
 

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -61,7 +60,6 @@ public class TransactionController {
 	 */
 	@JsonView(TransactionView.TransactionSimpleView.class)
 	@GetMapping("/transactions")
-	@ResponseBody
 	public List<Transaction> getTransactions(@RequestParam(defaultValue="none") String sortBy, @RequestParam(defaultValue="asc") String order) {
 		switch(sortBy) {
 			case "date" :
@@ -102,7 +100,6 @@ public class TransactionController {
 	 */
 	@JsonView(TransactionView.TransactionSimpleView.class)
 	@GetMapping("/history/{id}")
-	@ResponseBody
 	public List<Transaction> getTransactionsByUser(@PathVariable("id") int userId, @RequestParam(defaultValue="none") String sortBy, @RequestParam(defaultValue="asc") String order) {
 		switch(sortBy) {
 			case "date" :
@@ -135,7 +132,6 @@ public class TransactionController {
 	 */
 	@JsonView(TransactionView.TransactionSimpleView.class)
 	@GetMapping("/history/ewallet/{id}")
-	@ResponseBody
 	public List<Transaction> getTransactionsFromEwallet(@PathVariable("id") int userId) {
 		return iTransactionService.getTransactionsFromEwallet(userId);
 	}
@@ -160,7 +156,6 @@ public class TransactionController {
 	 */
 	@JsonView(TransactionView.TransactionSimpleView.class)
 	@GetMapping("/history/between/{userId}-{buddyId}")
-	@ResponseBody
 	public List<Transaction> getTransactionsBetweenUsers(@PathVariable("userId") int firstUserId, @PathVariable("buddyId") int secondUserId, @RequestParam(defaultValue="none") String sortBy, @RequestParam(defaultValue="asc") String order) {
 		switch(sortBy) {
 			case "date" :

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -53,7 +52,6 @@ public class UserController {
 	 */
 	@JsonView(UserView.LoginView.class)
 	@GetMapping("/users/login/{id}")
-	@ResponseBody
 	public User getUserById_forLoginPage(@PathVariable("id") int userId) {
 		return iUserService.getUserById(userId);
 	}
@@ -73,7 +71,6 @@ public class UserController {
 	 */
 	@JsonView(UserView.ProfileView.class)
 	@GetMapping("/users/profile/{id}")
-	@ResponseBody
 	public User getUserById_forProfilePage(@PathVariable("id") int userId) {
 		return iUserService.getUserById(userId);
 	}
@@ -93,7 +90,6 @@ public class UserController {
 	 */
 	@JsonView(UserView.UserAmountView.class)
 	@GetMapping("/users/amount/{id}")
-	@ResponseBody
 	public User getUserById_forHomePage(@PathVariable("id") int userId) {
 		return iUserService.getUserById(userId);
 	}
@@ -117,7 +113,6 @@ public class UserController {
 	 */
 	@JsonView(UserView.LoginView.class)
 	@PostMapping("/login")
-	@ResponseBody
 	public ResponseEntity<User> postUserByEmailAndPassword(@RequestBody UserLoginDto userLoginDto) throws Exception {
 		User loggedUser = iUserService.postUserByEmailAndPassword(userLoginDto);
 
@@ -145,7 +140,6 @@ public class UserController {
 	 */
 	@JsonView(UserView.UserAmountView.class)
 	@PostMapping("/user")
-	@ResponseBody
 	public ResponseEntity<User> addUser(@RequestBody User user) throws Exception {
 		User createdUser = iUserService.addUser(user);
 
@@ -172,7 +166,6 @@ public class UserController {
 	 * @return An <code>Integer</code> and a status code.
 	 */
 	@PutMapping("/users/{id}/profile")
-	@ResponseBody
 	public ResponseEntity<Integer> updateProfile(@PathVariable("id") int userId, @RequestBody UserProfileDto userProfileDto) throws Exception {
 		Integer updatedUser = iUserService.updateProfile(userId, userProfileDto);
 
@@ -198,7 +191,6 @@ public class UserController {
 	 * @return An <code>Integer</code> and a status code.
 	 */
 	@PutMapping("/users/{id}/active")
-	@ResponseBody
 	public ResponseEntity<Integer> updateActive(@PathVariable("id") int userId, @RequestBody boolean isActive) throws Exception {
 		Integer updatedUser = iUserService.updateActive(userId, isActive);
 
